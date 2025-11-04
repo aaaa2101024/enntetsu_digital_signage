@@ -1,1 +1,2 @@
-rootProject.name = "enntetsu_degital_signage"
+rootProject.name = "enntetsu_digital_signage"
+
