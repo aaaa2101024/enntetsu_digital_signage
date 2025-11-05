@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.enntetsu_digital_signage.service.ScrapingService;
 import com.example.enntetsu_digital_signage.service.Bus_doko_access;
 
+import java.util.HashMap;
+
 // APIの本体
 @RestController
 public class Bus_doko {
@@ -32,7 +34,7 @@ public class Bus_doko {
     }
 
     @GetMapping("/get_busdoko")
-    public String get_busdoko() {
+    public HashMap<String, String> get_busdoko() {
         return bus_doko_access.get_busdoko_json();
     }
 }

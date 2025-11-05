@@ -6,14 +6,20 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.stereotype.Service;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import java.util.HashMap;
 
 @Service
 public class Bus_doko_access {
-    public String get_busdoko_json() {
+    public HashMap<String,String> get_busdoko_json() {
         // URLを設定
         String url = "https://transfer-cloud.navitime.biz/entetsu/approachings?departure-busstop=00460589&arrival-busstop=00460001";
         WebDriver driver = null;
-        String title = "";
+
+        HashMap<String, String> output = new HashMap<>();
+        output.put("bus_number", "");
+        output.put("departure_time", "");
+        output.put("delay", "");
+        output.put("previous", "");
 
         try {
             // (1) WebDriverManagerが適切なバージョンのChromedriverを自動セットアップ
@@ -29,12 +35,17 @@ public class Bus_doko_access {
             // (4) 指定されたURLにアクセス
             driver.get(url);
 
-            // (5) ページのタイトルを取得
-            title = driver.getTitle();
+            // 系統番号の取得
+
+            // 何個前のバス停かを取得
+
+            // 本来の出発時刻を取得
+
+            // 遅延時間を取得
 
         } catch (Exception e) {
             e.printStackTrace(); // エラー処理 (実際にはもっと丁寧に行う)
-            return "Error: " + e.getMessage();
+            return output;
         } finally {
             // (6) 必ずドライバを終了する
             if (driver != null) {
@@ -42,6 +53,6 @@ public class Bus_doko_access {
             }
         }
 
-        return title;
+        return output;
     }
 }

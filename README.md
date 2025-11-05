@@ -32,5 +32,36 @@
 }
 ```
 
+### class-idなど(メイン画面)
+```
+mx-4 mt-4 flex justify-between : 系統
+flex items-center justify-center rounded border border-button bg-white px-2 text-button hover:no-underline w-auto h-10 text-base grow : 発着時刻表, 途中バス停
+mx-1 text-2xl : 何個前のバス停か
+```
+
+### 発着時刻表
+```
+text-[22px] font-bold : 発車時刻と到着時刻(2nなので注意)
+font-bold : 系統番号(完全一致ならおｋ)
+```
+
+### 途中のバス停
+```
+flex h-full min-w-[2.5rem] items-center break-all text-xs text-link : 途中のバス停(一番上をとればおｋ)
+```
+
+### 系統・時刻表・のりば一覧
+```
+flex flex-col : 方面を拾う(だいたい耐え)
+```
+ul-liだからforの方が速そう
+
+### 時刻表
+```
+my-2 ml-0.5 mr-4 h-5 w-5 cursor-pointer accent-link : チェックボックス
+cursor-pointer print:ml-0.5 : 系統を取得
+```
+あとはtable処理なのでTablesawを使うといいかも？
+
 ## 得た情報の活用
 予想浜松駅到着時刻から, 乗り換えられる最も近い在来線を表示
