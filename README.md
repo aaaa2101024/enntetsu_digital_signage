@@ -9,7 +9,7 @@
     - 現在何分遅延しているか
 
 ### 方法
-前提として, ![六間坂上から浜松駅へのバスどこ!?](https://transfer-cloud.navitime.biz/entetsu/approachings?departure-busstop=00460589&arrival-busstop=00460001)を使用」
+前提として, [六間坂上から浜松駅へのバスどこ!?](https://transfer-cloud.navitime.biz/entetsu/approachings?departure-busstop=00460589&arrival-busstop=00460001)を使用」
 - 何個前のバスか
     - バスどこ!?リストの一番上を取得
 - 何分に到着するか
@@ -20,7 +20,6 @@
     - 一番上にある時刻表を参照
     - 系統番号を含む時刻表を参照
     - 「すべて選択・解除」をクリック=>その系統番号をクリック=>現在時刻以降の中で, 最も直近のものを参照
-
 
 ## 得た情報の活用
 予想浜松駅到着時刻から, 乗り換えられる最も近い在来線を表示
