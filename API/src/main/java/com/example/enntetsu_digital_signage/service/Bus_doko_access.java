@@ -8,8 +8,10 @@ import org.springframework.stereotype.Service;
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 @Service
-class Bus_doko_access {
-    public String getPageTitle(String url) {
+public class Bus_doko_access {
+    public String get_busdoko_json() {
+        // URLを設定
+        String url = "https://transfer-cloud.navitime.biz/entetsu/approachings?departure-busstop=00460589&arrival-busstop=00460001";
         WebDriver driver = null;
         String title = "";
 
@@ -19,7 +21,7 @@ class Bus_doko_access {
 
             // (2) バックエンドで動かすため、ブラウザ画面を非表示 (headless) にする
             ChromeOptions options = new ChromeOptions();
-            options.addArguments("--headless"); // 画面なしで実行
+            // options.addArguments("--headless"); // 画面なしで実行
 
             // (3) Chromeドライバを起動
             driver = new ChromeDriver(options);

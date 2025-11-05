@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 // (1) さっき作ったServiceをインポート
 import com.example.enntetsu_digital_signage.service.ScrapingService;
+import com.example.enntetsu_digital_signage.service.Bus_doko_access;
 
 // APIの本体
 @RestController
@@ -15,9 +16,11 @@ public class Bus_doko {
     // (2) Serviceを使えるように準備 (依存性の注入)
     @Autowired
     private ScrapingService scrapingService;
+    @Autowired
+    private Bus_doko_access bus_doko_access;
 
     // GETリクエスト処理
-    @GetMapping("/bus_doko")
+    @GetMapping("/hello")
     public String hello() {
         return "hello";
     }
@@ -26,5 +29,10 @@ public class Bus_doko {
     public String scrapePage(@RequestParam(value = "url", defaultValue = "https://www.google.com") String url) {
         // (4) Serviceのメソッドを呼び出して結果を返す
         return scrapingService.getPageTitle(url);
+    }
+
+    @GetMapping("/get_busdoko")
+    public String get_busdoko() {
+        return bus_doko_access.get_busdoko_json();
     }
 }
