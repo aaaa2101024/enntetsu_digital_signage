@@ -22,8 +22,8 @@ public class Bus_doko_access {
         classes.put("time_intermidiate_stop",
                 ".flex.items-center.justify-center.rounded.border.border-button.bg-white.px-2.text-button.hover\\:no-underline.w-auto.h-10.text-base.grow"); // ボタン
         classes.put("between", ".mx-1.text-2xl"); // 途中バス停
-        classes.put("time_schedule", ".text-\\[22px\\].font-bold"); // 発車時刻・到着時刻
-        classes.put("bus_number_schedule", ".font-bold");// 発着時刻表での系統番号
+        classes.put("time_schedule", "[class=\"text-[22px] font-bold\"]"); // 発車時刻・到着時刻
+        classes.put("bus_number_schedule", "[class=\"font-bold\"]");// 発着時刻表での系統番号
         classes.put("intermidiate_stop_button",
                 ".flex.h-full.min-w-\\[2\\.5rem\\].items-center.break-all.text-xs.text-link"); // 途中のバス停
         classes.put("board_number", ".w-\\[676px\\].space-y-4.px-6.py-4");// 系統・時刻表・のりば番号での取得
@@ -66,12 +66,16 @@ public class Bus_doko_access {
             List<WebElement> input_element_buttons = driver
                     .findElements(By.cssSelector(classes.get("time_intermidiate_stop")));
             input_element_buttons.get(0).click();
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            // 時刻を取得
+            List<WebElement> input_element_time_schedule = driver.findElements(By.cssSelector(classes.get(
+                    "time_schedule")));
+            // 系統番号を取得
+            List<WebElement> input_element_bus_number_schedule = driver
+                    .findElements(By.cssSelector(classes.get("bus_number_schedule")));
+            for (int i = 0; i < input_element_bus_number_schedule.size(); i++) {
+                System.out.print(input_element_time_schedule.get(i * 2).getText() + "   ");
+                System.out.println(input_element_bus_number_schedule.get(i).getText());
             }
-
             // 遅延時間を取得
 
         } catch (Exception e) {
