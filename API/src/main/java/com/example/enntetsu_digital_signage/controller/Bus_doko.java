@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 // (1) さっき作ったServiceをインポート
 import com.example.enntetsu_digital_signage.service.ScrapingService;
 import com.example.enntetsu_digital_signage.service.Bus_doko_access;
+import com.example.enntetsu_digital_signage.service.Test;
 
 import java.util.HashMap;
 
@@ -20,6 +21,10 @@ public class Bus_doko {
     private ScrapingService scrapingService;
     @Autowired
     private Bus_doko_access bus_doko_access;
+
+    @Autowired
+    private Test test;
+    
 
     // GETリクエスト処理
     @GetMapping("/hello")
@@ -37,4 +42,10 @@ public class Bus_doko {
     public HashMap<String, String> get_busdoko() {
         return bus_doko_access.get_busdoko_json();
     }
+
+    @GetMapping("/test")
+    public HashMap<String, String> get_test() {
+        return test.test();
+    }
+
 }
