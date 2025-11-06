@@ -16,6 +16,16 @@ import java.time.format.DateTimeFormatter;
 
 @Service
 public class Bus_doko_access {
+
+    // 系統番号の取得
+    public String get_bus_number(HashMap<String,String> output, HashMap<String, String> classes, WebDriver driver) {
+        String bus_number = "";
+        WebElement input_element_bus_number = driver.findElement(By.cssSelector(classes.get("bus_number_main")));
+        bus_number = input_element_bus_number.getText();
+        output.put("bus_number", bus_number);
+        return bus_number;
+    }
+
     public HashMap<String, String> get_busdoko_json() {
         // URLを設定
         String url = "https://transfer-cloud.navitime.biz/entetsu/approachings?departure-busstop=00460589&arrival-busstop=00460001";
@@ -54,10 +64,8 @@ public class Bus_doko_access {
             driver.get(url);
 
             // 系統番号の取得
-            String bus_number = "";
-            WebElement input_element_bus_number = driver.findElement(By.cssSelector(classes.get("bus_number_main")));
-            bus_number = input_element_bus_number.getText();
-            output.put("bus_number", bus_number);
+            String bus_number = get_bus_number(output, classes, driver);
+
             // 何個前のバス停かを取得
             String input = "";
             List<WebElement> input_element_previous = driver.findElements(By.cssSelector(classes.get("between")));
