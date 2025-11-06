@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import java.util.HashMap;
+import java.util.List;
 
 @Service
 public class Bus_doko_access {
@@ -17,10 +18,10 @@ public class Bus_doko_access {
         String url = "https://transfer-cloud.navitime.biz/entetsu/approachings?departure-busstop=00460589&arrival-busstop=00460001";
         // classの定義
         HashMap<String, String> classes = new HashMap<>();
-        classes.put("bus_number_main", ".mx-4.mt-4.flex.justify-between");
+        classes.put("bus_number_main", ".mx-4.mt-4.flex.justify-between"); // 系統番号
         classes.put("time_intermidiate_stop",
-                "flex items-center justify-center rounded border border-button bg-white px-2 text-button hover:no-underline w-auto h-10 text-base grow");
-        classes.put("between", "mx-1 text-2xl");
+                ".flex.items-center.justify-center.rounded.border.border-button.bg-white.px-2.text-button.hover:no-underline.w-auto.h-10.text-base.grow"); // ボタン
+        classes.put("between", ".mx-1.text-2xl"); // 途中バス停
         classes.put("time_schedule", "text-[22px] font-bold");
         classes.put("bus_number_schedule", "font-bold");
         classes.put("intermidiate_stop_button", "flex h-full min-w-[2.5rem] items-center break-all text-xs text-link");
@@ -34,30 +35,31 @@ public class Bus_doko_access {
         HashMap<String, String> output = new HashMap<>();
         output.put("departure_time", "");
         output.put("delay", "");
-        output.put("previous", "");
-        
+
         try {
             // (1) WebDriverManagerが適切なバージョンのChromedriverを自動セットアップ
             WebDriverManager.chromedriver().setup();
-            
+
             // (2) バックエンドで動かすため、ブラウザ画面を非表示 (headless) にする
             ChromeOptions options = new ChromeOptions();
             // options.addArguments("--headless"); // 画面なしで実行
-            
+
             // (3) Chromeドライバを起動
             driver = new ChromeDriver(options);
-            
+
             // (4) 指定されたURLにアクセス
             driver.get(url);
-            
-            // 系統番号の取得
-            String input = "";
-            WebElement input_element_bus_number = driver.findElement(By.cssSelector(classes.get("bus_number_main")));
-            input = input_element_bus_number.getText();
-            output.put("bus_number", input);
-            // 何個前のバス停かを取得
-            input = "";
 
+            // 系統番号の取得
+            String bus_number = "";
+            WebElement input_element_bus_number = driver.findElement(By.cssSelector(classes.get("bus_number_main")));
+            bus_number = input_element_bus_number.getText();
+            output.put("bus_number", bus_number);
+            // 何個前のバス停かを取得
+            String input = "";
+            List<WebElement> input_element_previous = driver.findElements(By.cssSelector(classes.get("between")));
+            input = input_element_previous.get(0).getText();
+            output.put("previous", input);
             // 本来の出発時刻を取得
 
             // 遅延時間を取得
