@@ -22,13 +22,13 @@ public class Bus_doko_access {
         classes.put("time_intermidiate_stop",
                 ".flex.items-center.justify-center.rounded.border.border-button.bg-white.px-2.text-button.hover:no-underline.w-auto.h-10.text-base.grow"); // ボタン
         classes.put("between", ".mx-1.text-2xl"); // 途中バス停
-        classes.put("time_schedule", "text-[22px] font-bold");
-        classes.put("bus_number_schedule", "font-bold");
-        classes.put("intermidiate_stop_button", "flex h-full min-w-[2.5rem] items-center break-all text-xs text-link");
-        classes.put("board_number", "w-[676px] space-y-4 px-6 py-4");
-        classes.put("check_box", "my-2 ml-0.5 mr-4 h-5 w-5 cursor-pointer accent-link");
-        classes.put("bus_number_time_schedule", "cursor-pointer print:ml-0.5");
-        classes.put("time_table", "mt-6 w-full table-fixed border-collapse border border-dark-line");
+        classes.put("time_schedule", ".text-\\\\[22px\\\\].font-bold");
+        classes.put("bus_number_schedule", ".font-bold");
+        classes.put("intermidiate_stop_button", ".flex.h-full.min-w-\\\\[2\\\\.5rem\\\\].items-center.break-all.text-xs.text-link");
+        classes.put("board_number", ".w-\\\\[676px\\\\].space-y-4.px-6.py-4");
+        classes.put("check_box", ".my-2.ml-0\\\\.5.mr-4.h-5.w-5.cursor-pointer.accent-link");
+        classes.put("bus_number_time_schedule", ".cursor-pointer.print:ml-0\\\\.5");
+        classes.put("time_table", ".mt-6.w-full.table-fixed.border-collapse.border.border-dark-line");
 
         WebDriver driver = null;
 
