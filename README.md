@@ -36,7 +36,6 @@
 ```
 mx-4 mt-4 flex justify-between : 系統
 flex items-center justify-center rounded border border-button bg-white px-2 text-button hover:no-underline w-auto h-10 text-base grow : 発着時刻表, 途中バス停
-.flex.items-center.justify-center.rounded.border.border-button.bg-white.px-2.text-button.hover:no-underline.w-auto.h-10.text-base.grow
 mx-1 text-2xl : 何個前のバス停か
 ```
 
@@ -49,6 +48,7 @@ font-bold : 系統番号(完全一致ならおｋ)
 ### 途中のバス停
 ```
 flex h-full min-w-[2.5rem] items-center break-all text-xs text-link : 途中のバス停(一番上をとればおｋ)
+.flex.h-full.min-w-\\[2\\.5rem\\].items-center.break-all.text-xs.text-link
 ```
 
 ### 系統・時刻表・のりば一覧

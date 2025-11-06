@@ -5,6 +5,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+
 import org.springframework.stereotype.Service;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
@@ -13,6 +17,7 @@ import java.util.List;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.Duration;
 
 @Service
 public class Bus_doko_access {
@@ -36,9 +41,7 @@ public class Bus_doko_access {
 
     // 本来の出発時刻を取得
     public void get_departure(HashMap<String, String> output, HashMap<String, String> classes, WebDriver driver,
-            String now, String bus_number) {
-        List<WebElement> input_element_buttons = driver
-                .findElements(By.cssSelector(classes.get("time_intermidiate_stop")));
+            String now, String bus_number, List<WebElement> input_element_buttons) {
         input_element_buttons.get(0).click();
         // 時刻を取得
         List<WebElement> input_element_time_schedule = driver.findElements(By.cssSelector(classes.get(
@@ -105,6 +108,13 @@ public class Bus_doko_access {
             LocalDateTime date_type_now = LocalDateTime.now();
             String now = date_type_now.format(time_formatter);
 
+            // 最大で3秒待つように指定
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+            // ボタン周りの値の取得
+            List<WebElement> input_element_buttons = driver
+                    .findElements(By.cssSelector(classes.get("time_intermidiate_stop")));
+
             // 系統番号の取得と反映
             String bus_number = get_bus_number(output, classes, driver);
 
@@ -112,9 +122,22 @@ public class Bus_doko_access {
             get_previous(output, classes, driver);
 
             // 本来の出発時刻を取得
-            get_departure(output, classes, driver, now, bus_number);
+            get_departure(output, classes, driver, now, bus_number, input_element_buttons);
 
             // 遅延時間を取得
+            // 元のメイン画面へ戻る
+            driver.get(url);
+
+            input_element_buttons = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(classes.get("time_intermidiate_stop"))));
+            input_element_buttons.get(1).click();
+            WebElement input_element_time_schedule_button = driver
+                    .findElement(By.cssSelector(classes.get("intermidiate_stop_button")));
+            input_element_time_schedule_button.click();
+            try {
+                Thread.sleep(3000);
+            } catch (Exception e) {
+                // TODO: handle exception
+            }
 
         } catch (Exception e) {
             e.printStackTrace(); // エラー処理 (実際にはもっと丁寧に行う)
