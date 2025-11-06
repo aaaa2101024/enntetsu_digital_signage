@@ -18,12 +18,20 @@ import java.time.format.DateTimeFormatter;
 public class Bus_doko_access {
 
     // 系統番号の取得
-    public String get_bus_number(HashMap<String,String> output, HashMap<String, String> classes, WebDriver driver) {
+    public String get_bus_number(HashMap<String, String> output, HashMap<String, String> classes, WebDriver driver) {
         String bus_number = "";
         WebElement input_element_bus_number = driver.findElement(By.cssSelector(classes.get("bus_number_main")));
         bus_number = input_element_bus_number.getText();
         output.put("bus_number", bus_number);
         return bus_number;
+    }
+    
+    // 何個前のバス停かを取得
+    public void get_previous(HashMap<String, String> output, HashMap<String, String> classes, WebDriver driver) {
+        String input = "";
+        List<WebElement> input_element_previous = driver.findElements(By.cssSelector(classes.get("between")));
+        input = input_element_previous.get(0).getText();
+        output.put("previous", input);
     }
 
     public HashMap<String, String> get_busdoko_json() {
@@ -67,12 +75,9 @@ public class Bus_doko_access {
             String bus_number = get_bus_number(output, classes, driver);
 
             // 何個前のバス停かを取得
-            String input = "";
-            List<WebElement> input_element_previous = driver.findElements(By.cssSelector(classes.get("between")));
-            input = input_element_previous.get(0).getText();
-            output.put("previous", input);
+            get_previous(output, classes, driver);
             // 本来の出発時刻を取得
-            input = "";
+            String input = "";
             List<WebElement> input_element_buttons = driver
                     .findElements(By.cssSelector(classes.get("time_intermidiate_stop")));
             input_element_buttons.get(0).click();
