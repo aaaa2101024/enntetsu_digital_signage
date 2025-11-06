@@ -63,9 +63,14 @@ public class Bus_doko_access {
             output.put("previous", input);
             // 本来の出発時刻を取得
             input = "";
-            List<WebElement> input_element_buttons = driver.findElements(By.cssSelector(classes.get("time_intermidiate_stop")));
-            
-            
+            List<WebElement> input_element_buttons = driver
+                    .findElements(By.cssSelector(classes.get("time_intermidiate_stop")));
+            input_element_buttons.get(0).click();
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
             // 遅延時間を取得
 
