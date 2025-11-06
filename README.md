@@ -36,6 +36,7 @@
 ```
 mx-4 mt-4 flex justify-between : 系統
 flex items-center justify-center rounded border border-button bg-white px-2 text-button hover:no-underline w-auto h-10 text-base grow : 発着時刻表, 途中バス停
+.flex.items-center.justify-center.rounded.border.border-button.bg-white.px-2.text-button.hover:no-underline.w-auto.h-10.text-base.grow
 mx-1 text-2xl : 何個前のバス停か
 ```
 

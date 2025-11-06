@@ -20,15 +20,15 @@ public class Bus_doko_access {
         HashMap<String, String> classes = new HashMap<>();
         classes.put("bus_number_main", ".mx-4.mt-4.flex.justify-between"); // 系統番号
         classes.put("time_intermidiate_stop",
-                ".flex.items-center.justify-center.rounded.border.border-button.bg-white.px-2.text-button.hover:no-underline.w-auto.h-10.text-base.grow"); // ボタン
+                ".flex.items-center.justify-center.rounded.border.border-button.bg-white.px-2.text-button.hover\\:no-underline.w-auto.h-10.text-base.grow"); // ボタン
         classes.put("between", ".mx-1.text-2xl"); // 途中バス停
-        classes.put("time_schedule", ".text-\\\\[22px\\\\].font-bold"); // 発車時刻・到着時刻
+        classes.put("time_schedule", ".text-\\[22px\\].font-bold"); // 発車時刻・到着時刻
         classes.put("bus_number_schedule", ".font-bold");// 発着時刻表での系統番号
         classes.put("intermidiate_stop_button",
-                ".flex.h-full.min-w-\\\\[2\\\\.5rem\\\\].items-center.break-all.text-xs.text-link"); // 途中のバス停
-        classes.put("board_number", ".w-\\\\[676px\\\\].space-y-4.px-6.py-4");// 系統・時刻表・のりば番号での取得
-        classes.put("check_box", ".my-2.ml-0\\\\.5.mr-4.h-5.w-5.cursor-pointer.accent-link");// チェックボックス
-        classes.put("bus_number_time_schedule", ".cursor-pointer.print:ml-0\\\\.5");// 系統番号情報
+                ".flex.h-full.min-w-\\[2\\.5rem\\].items-center.break-all.text-xs.text-link"); // 途中のバス停
+        classes.put("board_number", ".w-\\[676px\\].space-y-4.px-6.py-4");// 系統・時刻表・のりば番号での取得
+        classes.put("check_box", ".my-2.ml-0\\.5.mr-4.h-5.w-5.cursor-pointer.accent-link");// チェックボックス
+        classes.put("bus_number_time_schedule", ".cursor-pointer.print\\:ml-0\\.5");// 系統番号情報
         classes.put("time_table", ".mt-6.w-full.table-fixed.border-collapse.border.border-dark-line");// 時刻表テーブル
 
         WebDriver driver = null;
@@ -62,6 +62,10 @@ public class Bus_doko_access {
             input = input_element_previous.get(0).getText();
             output.put("previous", input);
             // 本来の出発時刻を取得
+            input = "";
+            List<WebElement> input_element_buttons = driver.findElements(By.cssSelector(classes.get("time_intermidiate_stop")));
+            
+            
 
             // 遅延時間を取得
 
