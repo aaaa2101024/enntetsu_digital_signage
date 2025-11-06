@@ -9,5 +9,4 @@ public class EnntetsuDigitalSignageApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(EnntetsuDigitalSignageApplication.class, args);
 	}
-
 }

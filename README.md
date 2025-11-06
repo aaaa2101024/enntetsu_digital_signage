@@ -52,7 +52,7 @@ flex h-full min-w-[2.5rem] items-center break-all text-xs text-link : 途中の�
 
 ### 系統・時刻表・のりば一覧
 ```
-flex flex-col : 方面を拾う(だいたい耐え)
+w-[676px] space-y-4 px-6 py-4 : ul-liで方面を拾う
 ```
 ul-liだからforの方が速そう
 
@@ -60,6 +60,7 @@ ul-liだからforの方が速そう
 ```
 my-2 ml-0.5 mr-4 h-5 w-5 cursor-pointer accent-link : チェックボックス
 cursor-pointer print:ml-0.5 : 系統を取得
+mt-6 w-full table-fixed border-collapse border border-dark-line : 時刻表テーブル
 ```
 あとはtable処理なのでTablesawを使うといいかも？
 

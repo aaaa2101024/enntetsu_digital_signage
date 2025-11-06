@@ -1,6 +1,8 @@
 package com.example.enntetsu_digital_signage.service;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.springframework.stereotype.Service;
@@ -10,34 +12,51 @@ import java.util.HashMap;
 
 @Service
 public class Bus_doko_access {
-    public HashMap<String,String> get_busdoko_json() {
+    public HashMap<String, String> get_busdoko_json() {
         // URLを設定
         String url = "https://transfer-cloud.navitime.biz/entetsu/approachings?departure-busstop=00460589&arrival-busstop=00460001";
+        // classの定義
+        HashMap<String, String> classes = new HashMap<>();
+        classes.put("bus_number_main", ".mx-4.mt-4.flex.justify-between");
+        classes.put("time_intermidiate_stop",
+                "flex items-center justify-center rounded border border-button bg-white px-2 text-button hover:no-underline w-auto h-10 text-base grow");
+        classes.put("between", "mx-1 text-2xl");
+        classes.put("time_schedule", "text-[22px] font-bold");
+        classes.put("bus_number_schedule", "font-bold");
+        classes.put("intermidiate_stop_button", "flex h-full min-w-[2.5rem] items-center break-all text-xs text-link");
+        classes.put("board_number", "w-[676px] space-y-4 px-6 py-4");
+        classes.put("check_box", "my-2 ml-0.5 mr-4 h-5 w-5 cursor-pointer accent-link");
+        classes.put("bus_number_time_schedule", "cursor-pointer print:ml-0.5");
+        classes.put("time_table", "mt-6 w-full table-fixed border-collapse border border-dark-line");
+
         WebDriver driver = null;
 
         HashMap<String, String> output = new HashMap<>();
-        output.put("bus_number", "");
         output.put("departure_time", "");
         output.put("delay", "");
         output.put("previous", "");
-
+        
         try {
             // (1) WebDriverManagerが適切なバージョンのChromedriverを自動セットアップ
             WebDriverManager.chromedriver().setup();
-
+            
             // (2) バックエンドで動かすため、ブラウザ画面を非表示 (headless) にする
             ChromeOptions options = new ChromeOptions();
             // options.addArguments("--headless"); // 画面なしで実行
-
+            
             // (3) Chromeドライバを起動
             driver = new ChromeDriver(options);
-
+            
             // (4) 指定されたURLにアクセス
             driver.get(url);
-
+            
             // 系統番号の取得
-
+            String input = "";
+            WebElement input_element_bus_number = driver.findElement(By.cssSelector(classes.get("bus_number_main")));
+            input = input_element_bus_number.getText();
+            output.put("bus_number", input);
             // 何個前のバス停かを取得
+            input = "";
 
             // 本来の出発時刻を取得
 
