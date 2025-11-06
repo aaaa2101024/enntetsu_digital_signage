@@ -25,13 +25,42 @@ public class Bus_doko_access {
         output.put("bus_number", bus_number);
         return bus_number;
     }
-    
+
     // 何個前のバス停かを取得
     public void get_previous(HashMap<String, String> output, HashMap<String, String> classes, WebDriver driver) {
         String input = "";
         List<WebElement> input_element_previous = driver.findElements(By.cssSelector(classes.get("between")));
         input = input_element_previous.get(0).getText();
         output.put("previous", input);
+    }
+
+    // 本来の出発時刻を取得
+    public void get_departure(HashMap<String, String> output, HashMap<String, String> classes, WebDriver driver,
+            String now, String bus_number) {
+        List<WebElement> input_element_buttons = driver
+                .findElements(By.cssSelector(classes.get("time_intermidiate_stop")));
+        input_element_buttons.get(0).click();
+        // 時刻を取得
+        List<WebElement> input_element_time_schedule = driver.findElements(By.cssSelector(classes.get(
+                "time_schedule")));
+        // 系統番号を取得
+        List<WebElement> input_element_bus_number_schedule = driver
+                .findElements(By.cssSelector(classes.get("bus_number_schedule")));
+        int now_hour = Integer.parseInt(now.substring(0, 2));
+        int now_minute = Integer.parseInt(now.substring(3, 5));
+        int now_score = now_hour * 60 + now_minute;
+        for (int i = 0; i < input_element_bus_number_schedule.size(); i++) {
+            if (input_element_bus_number_schedule.get(i).getText().equals(bus_number)) {
+                String time_schedule = input_element_time_schedule.get(i * 2).getText();
+                int hour = Integer.parseInt(time_schedule.substring(0, 2));
+                int minute = Integer.parseInt(time_schedule.substring(3, 5));
+                int score = hour * 60 + minute;
+                if (now_score <= score) {
+                    output.put("departure_time", time_schedule);
+                    break;
+                }
+            }
+        }
     }
 
     public HashMap<String, String> get_busdoko_json() {
@@ -71,41 +100,20 @@ public class Bus_doko_access {
             // (4) 指定されたURLにアクセス
             driver.get(url);
 
-            // 系統番号の取得
-            String bus_number = get_bus_number(output, classes, driver);
-
-            // 何個前のバス停かを取得
-            get_previous(output, classes, driver);
-            // 本来の出発時刻を取得
-            String input = "";
-            List<WebElement> input_element_buttons = driver
-                    .findElements(By.cssSelector(classes.get("time_intermidiate_stop")));
-            input_element_buttons.get(0).click();
-            // 時刻を取得
-            List<WebElement> input_element_time_schedule = driver.findElements(By.cssSelector(classes.get(
-                    "time_schedule")));
-            // 系統番号を取得
-            List<WebElement> input_element_bus_number_schedule = driver
-                    .findElements(By.cssSelector(classes.get("bus_number_schedule")));
             // 現在の時刻を取得
             DateTimeFormatter time_formatter = DateTimeFormatter.ofPattern("HH:mm");
             LocalDateTime date_type_now = LocalDateTime.now();
             String now = date_type_now.format(time_formatter);
-            int now_hour = Integer.parseInt(now.substring(0, 2));
-            int now_minute = Integer.parseInt(now.substring(3, 5));
-            int now_score = now_hour * 60 + now_minute;
-            for (int i = 0; i < input_element_bus_number_schedule.size(); i++) {
-                if (input_element_bus_number_schedule.get(i).getText().equals(bus_number)) {
-                    String time_schedule = input_element_time_schedule.get(i * 2).getText();
-                    int hour = Integer.parseInt(time_schedule.substring(0, 2));
-                    int minute = Integer.parseInt(time_schedule.substring(3, 5));
-                    int score = hour * 60 + minute;
-                    if (now_score <= score) {
-                        output.put("departure_time", time_schedule);
-                        break;
-                    }
-                }
-            }
+
+            // 系統番号の取得と反映
+            String bus_number = get_bus_number(output, classes, driver);
+
+            // 何個前のバス停かを取得
+            get_previous(output, classes, driver);
+
+            // 本来の出発時刻を取得
+            get_departure(output, classes, driver, now, bus_number);
+
             // 遅延時間を取得
 
         } catch (Exception e) {
