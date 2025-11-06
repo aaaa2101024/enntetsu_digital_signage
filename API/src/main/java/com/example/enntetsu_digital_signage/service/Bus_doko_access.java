@@ -11,6 +11,9 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 import java.util.HashMap;
 import java.util.List;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @Service
 public class Bus_doko_access {
     public HashMap<String, String> get_busdoko_json() {
@@ -34,7 +37,6 @@ public class Bus_doko_access {
         WebDriver driver = null;
 
         HashMap<String, String> output = new HashMap<>();
-        output.put("departure_time", "");
         output.put("delay", "");
 
         try {
@@ -72,9 +74,24 @@ public class Bus_doko_access {
             // 系統番号を取得
             List<WebElement> input_element_bus_number_schedule = driver
                     .findElements(By.cssSelector(classes.get("bus_number_schedule")));
+            // 現在の時刻を取得
+            DateTimeFormatter time_formatter = DateTimeFormatter.ofPattern("HH:mm");
+            LocalDateTime date_type_now = LocalDateTime.now();
+            String now = date_type_now.format(time_formatter);
+            int now_hour = Integer.parseInt(now.substring(0, 2));
+            int now_minute = Integer.parseInt(now.substring(3, 5));
+            int now_score = now_hour * 60 + now_minute;
             for (int i = 0; i < input_element_bus_number_schedule.size(); i++) {
-                System.out.print(input_element_time_schedule.get(i * 2).getText() + "   ");
-                System.out.println(input_element_bus_number_schedule.get(i).getText());
+                if (input_element_bus_number_schedule.get(i).getText().equals(bus_number)) {
+                    String time_schedule = input_element_time_schedule.get(i * 2).getText();
+                    int hour = Integer.parseInt(time_schedule.substring(0, 2));
+                    int minute = Integer.parseInt(time_schedule.substring(3, 5));
+                    int score = hour * 60 + minute;
+                    if (now_score <= score) {
+                        output.put("departure_time", time_schedule);
+                        break;
+                    }
+                }
             }
             // 遅延時間を取得
 
