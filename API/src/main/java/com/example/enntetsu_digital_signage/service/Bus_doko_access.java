@@ -112,8 +112,9 @@ public class Bus_doko_access {
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
             // ボタン周りの値の取得
-            List<WebElement> input_element_buttons = driver
-                    .findElements(By.cssSelector(classes.get("time_intermidiate_stop")));
+            List<WebElement> input_element_buttons = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(
+                    By.cssSelector(classes.get(
+                            "time_intermidiate_stop"))));
 
             // 系統番号の取得と反映
             String bus_number = get_bus_number(output, classes, driver);
