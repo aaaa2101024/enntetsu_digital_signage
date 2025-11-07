@@ -65,7 +65,12 @@ public class Bus_doko_access {
     // 本来の出発時刻を取得
     public void get_departure(HashMap<String, String> output, HashMap<String, String> classes,
             WebDriverWait wait,
-            String now, String bus_number, List<WebElement> input_element_buttons) {
+            String now, String bus_number, int delay) {
+        // ボタン周りの値の取得
+        List<WebElement> input_element_buttons = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(
+                By.cssSelector(classes.get(
+                        "time_intermidiate_stop"))));
+
         input_element_buttons.get(0).click();
         // 時刻を取得
         List<WebElement> input_element_time_schedule = wait
@@ -75,9 +80,10 @@ public class Bus_doko_access {
         List<WebElement> input_element_bus_number_schedule = wait
                 .until(ExpectedConditions
                         .visibilityOfAllElementsLocatedBy(By.cssSelector(classes.get("bus_number_schedule"))));
+        // 遅延時間を差し引いて, 今の時刻を取得
         int now_hour = Integer.parseInt(now.substring(0, 2));
         int now_minute = Integer.parseInt(now.substring(3, 5));
-        int now_score = now_hour * 60 + now_minute;
+        int now_score = now_hour * 60 + now_minute - delay;
         for (int i = 0; i < input_element_bus_number_schedule.size(); i++) {
             if (input_element_bus_number_schedule.get(i).getText().equals(bus_number)) {
                 String time_schedule = input_element_time_schedule.get(i * 2).getText();
@@ -151,13 +157,8 @@ public class Bus_doko_access {
             // 何個前のバス停かを取得
             get_previous(output, classes, wait);
 
-            // 本来の出発時刻を取得
-            get_departure(output, classes, wait, now, bus_number, input_element_buttons);
-
             // 遅延時間を取得
             int delay = 0;
-            // 元のメイン画面へ戻る
-            driver.get(url);
 
             input_element_buttons = wait.until(ExpectedConditions
                     .visibilityOfAllElementsLocatedBy(By.cssSelector(classes.get("time_intermidiate_stop"))));
@@ -234,8 +235,6 @@ public class Bus_doko_access {
                     int hour = Integer.parseInt(hour_str.substring(0, 2));
                     int minute = Integer.parseInt(minite_str.substring(0, 2));
                     int score = hour * 60 + minute;
-                    System.out.println(score);
-                    System.out.println(now_score);
                     // 初めて過去の世界になったらおｋ
                     if (now_score >= score) {
                         delay = now_score - score;
@@ -248,6 +247,12 @@ public class Bus_doko_access {
             }
             // 遅延時間を登録
             output.put("delay", String.valueOf(delay));
+
+            // 元のメイン画面へ戻る
+            driver.get(url);
+
+            // 本来の出発時刻を取得
+            get_departure(output, classes, wait, now, bus_number, delay);
 
         } catch (Exception e) {
             e.printStackTrace(); // エラー処理 (実際にはもっと丁寧に行う)
