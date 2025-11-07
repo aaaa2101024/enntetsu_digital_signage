@@ -145,8 +145,16 @@ public class Bus_doko_access {
             WebElement input_element_board_number = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(classes.get(
                     "board_number"))));
             List<WebElement> board_number_sapn = input_element_board_number.findElements(By.tagName("span"));
-            for (WebElement el : board_number_sapn) {
-                System.out.println(el.getText());
+            for (WebElement span_element : board_number_sapn) {
+                if (bus_number.equals(span_element.getText())) {
+                    span_element.click();
+                    break;
+                }
+            }
+            try {
+                Thread.sleep(3000);
+            } catch (Exception e) {
+                // TODO: handle exception
             }
 
         } catch (Exception e) {
