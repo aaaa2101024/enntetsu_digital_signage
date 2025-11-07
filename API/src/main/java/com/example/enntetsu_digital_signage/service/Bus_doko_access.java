@@ -17,10 +17,27 @@ import java.util.List;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.DayOfWeek;
 import java.time.Duration;
+import java.time.LocalDate;
 
 @Service
 public class Bus_doko_access {
+
+    static final int WEEKDAY = 0;
+    static final int SATUREDAY = 1;
+    static final int SUNDAY = 2;
+
+    public int get_day_of_the_week() {
+        LocalDate today = LocalDate.now();
+        int day_of_week = today.getDayOfWeek().getValue();
+        if (day_of_week == 6) {
+            return SATUREDAY;
+        } else if (day_of_week == 7) {
+            return SUNDAY;
+        } else
+            return WEEKDAY;
+    }
 
     // 系統番号の取得
     public String get_bus_number(HashMap<String, String> output, HashMap<String, String> classes, WebDriverWait wait) {
@@ -113,6 +130,9 @@ public class Bus_doko_access {
             LocalDateTime date_type_now = LocalDateTime.now();
             String now = date_type_now.format(time_formatter);
 
+            // 曜日を判定
+            int day_of_week = get_day_of_the_week();
+
             // 最大で3秒待つように指定
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
@@ -165,13 +185,19 @@ public class Bus_doko_access {
             for (int i = 0; i < input_element_bus_number_time_schedule.size(); i++) {
                 if (bus_number.equals(input_element_bus_number_time_schedule.get(i).getText())) {
                     input_element_checkboxes.get(i + 1).click();
+                    break;
                 }
             }
-            try {
-                Thread.sleep(3000);
-            } catch (Exception e) {
-                // TODO: handle exception
-            }
+            // テーブルから情報を取得
+            WebElement time_schedule_table = wait
+                    .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(classes.get("time_table"))));
+            // 時間を持ってくる
+            System.out.println(day_of_week);
+            // 曜日=>N時=>m分
+
+            // 後ろから探索して初めて今の時間前以降になるものを取得
+
+            // 遅延時間を登録
 
         } catch (Exception e) {
             e.printStackTrace(); // エラー処理 (実際にはもっと丁寧に行う)

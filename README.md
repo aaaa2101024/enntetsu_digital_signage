@@ -62,8 +62,15 @@ ul-liだからforの方が速そう
 my-2 ml-0.5 mr-4 h-5 w-5 cursor-pointer accent-link : チェックボックス
 cursor-pointer print:ml-0.5 : 系統を取得
 mt-6 w-full table-fixed border-collapse border border-dark-line : 時刻表テーブル
+py-1 text-lg : 時刻表テーブルの時刻の部分
+
 ```
-あとはtable処理なのでTablesawを使うといいかも？
+
 
 ## 得た情報の活用
 予想浜松駅到着時刻から, 乗り換えられる最も近い在来線を表示
+
+
+### 備忘録
+曜日が祝日対応していない=>本当にやりたくない
+マジックナンバーだらけ=>本当にやりたくない
