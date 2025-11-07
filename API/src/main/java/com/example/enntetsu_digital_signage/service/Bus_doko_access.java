@@ -11,6 +11,8 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.annotation.ObjectIdGenerators.None;
+
 import io.github.bonigarcia.wdm.WebDriverManager;
 import java.util.HashMap;
 import java.util.List;
@@ -207,13 +209,11 @@ public class Bus_doko_access {
                 ArrayList<String> table_temp = new ArrayList<>();
                 // liタグで絞り込み
                 List<WebElement> table_li_all = time_hour_and_minite.get(i * 3 + day_of_week)
-                        .findElements(By.tagName("li"));
-                // 見えているやつのみに絞る
-                List<WebElement> table_li = table_li_all.stream().filter(li -> li.isDisplayed())
-                        .collect((Collectors.toList()));
+                        .findElements(By.tagName("li"));;
                 // ArrayListに登録
-                for (WebElement li : table_li) {
-                    table_temp.add(li.getText());
+                for (WebElement li : table_li_all) {
+                    if (!li.getText().equals(""))
+                        table_temp.add(li.getText());
                 }
                 // iが時間(hour)を返してくれる
                 String temp_hour = hour_table.get(i + 4).getText();
