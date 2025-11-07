@@ -33,23 +33,27 @@ public class Bus_doko_access {
     }
 
     // 何個前のバス停かを取得
-    public void get_previous(HashMap<String, String> output, HashMap<String, String> classes, WebDriver driver) {
+    public void get_previous(HashMap<String, String> output, HashMap<String, String> classes, WebDriverWait wait) {
         String input = "";
-        List<WebElement> input_element_previous = driver.findElements(By.cssSelector(classes.get("between")));
+        List<WebElement> input_element_previous = wait
+                .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(classes.get("between"))));
         input = input_element_previous.get(0).getText();
         output.put("previous", input);
     }
 
     // 本来の出発時刻を取得
-    public void get_departure(HashMap<String, String> output, HashMap<String, String> classes, WebDriver driver,
+    public void get_departure(HashMap<String, String> output, HashMap<String, String> classes, 
+            WebDriverWait wait,
             String now, String bus_number, List<WebElement> input_element_buttons) {
         input_element_buttons.get(0).click();
         // 時刻を取得
-        List<WebElement> input_element_time_schedule = driver.findElements(By.cssSelector(classes.get(
-                "time_schedule")));
+        List<WebElement> input_element_time_schedule = wait
+                .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(classes.get(
+                        "time_schedule"))));
         // 系統番号を取得
-        List<WebElement> input_element_bus_number_schedule = driver
-                .findElements(By.cssSelector(classes.get("bus_number_schedule")));
+        List<WebElement> input_element_bus_number_schedule = wait
+                .until(ExpectedConditions
+                        .visibilityOfAllElementsLocatedBy(By.cssSelector(classes.get("bus_number_schedule"))));
         int now_hour = Integer.parseInt(now.substring(0, 2));
         int now_minute = Integer.parseInt(now.substring(3, 5));
         int now_score = now_hour * 60 + now_minute;
@@ -121,10 +125,10 @@ public class Bus_doko_access {
             String bus_number = get_bus_number(output, classes, wait);
 
             // 何個前のバス停かを取得
-            get_previous(output, classes, driver);
+            get_previous(output, classes, wait);
 
             // 本来の出発時刻を取得
-            get_departure(output, classes, driver, now, bus_number, input_element_buttons);
+            get_departure(output, classes, wait, now, bus_number, input_element_buttons);
 
             // 遅延時間を取得
             // 元のメイン画面へ戻る
