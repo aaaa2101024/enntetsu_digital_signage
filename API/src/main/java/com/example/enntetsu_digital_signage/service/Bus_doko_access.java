@@ -42,7 +42,7 @@ public class Bus_doko_access {
     }
 
     // 本来の出発時刻を取得
-    public void get_departure(HashMap<String, String> output, HashMap<String, String> classes, 
+    public void get_departure(HashMap<String, String> output, HashMap<String, String> classes,
             WebDriverWait wait,
             String now, String bus_number, List<WebElement> input_element_buttons) {
         input_element_buttons.get(0).click();
@@ -134,7 +134,8 @@ public class Bus_doko_access {
             // 元のメイン画面へ戻る
             driver.get(url);
 
-            input_element_buttons = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(classes.get("time_intermidiate_stop"))));
+            input_element_buttons = wait.until(ExpectedConditions
+                    .visibilityOfAllElementsLocatedBy(By.cssSelector(classes.get("time_intermidiate_stop"))));
             input_element_buttons.get(1).click();
             WebElement input_element_time_schedule_button = wait
                     .until(ExpectedConditions.visibilityOfElementLocated(
@@ -142,13 +143,28 @@ public class Bus_doko_access {
             input_element_time_schedule_button.click();
 
             // 乗り場番号をクリック
-            WebElement input_element_board_number = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(classes.get(
-                    "board_number"))));
+            WebElement input_element_board_number = wait
+                    .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(classes.get(
+                            "board_number"))));
             List<WebElement> board_number_sapn = input_element_board_number.findElements(By.tagName("span"));
             for (WebElement span_element : board_number_sapn) {
                 if (bus_number.equals(span_element.getText())) {
                     span_element.click();
                     break;
+                }
+            }
+            // checkboxはすべて選択・解除があるので1つ最初に増える
+            List<WebElement> input_element_checkboxes = wait.until(
+                    ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(classes.get("check_box"))));
+            List<WebElement> input_element_bus_number_time_schedule = wait
+                    .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(classes.get(
+                            "bus_number_time_schedule"))));
+            // すべて選択・解除をクリック
+            input_element_checkboxes.get(0).click();
+            // 目的の系統番号だけクリック
+            for (int i = 0; i < input_element_bus_number_time_schedule.size(); i++) {
+                if (bus_number.equals(input_element_bus_number_time_schedule.get(i).getText())) {
+                    input_element_checkboxes.get(i + 1).click();
                 }
             }
             try {
