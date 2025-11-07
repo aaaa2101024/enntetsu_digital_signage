@@ -209,7 +209,7 @@ public class Bus_doko_access {
                 ArrayList<String> table_temp = new ArrayList<>();
                 // liタグで絞り込み
                 List<WebElement> table_li_all = time_hour_and_minite.get(i * 3 + day_of_week)
-                        .findElements(By.tagName("li"));;
+                        .findElements(By.tagName("li"));
                 // ArrayListに登録
                 for (WebElement li : table_li_all) {
                     if (!li.getText().equals(""))
@@ -219,9 +219,7 @@ public class Bus_doko_access {
                 String temp_hour = hour_table.get(i + 4).getText();
                 // 登録
                 time_schedule_table.put(temp_hour, table_temp);
-                System.out.println(table_temp);
             }
-            System.out.println(time_schedule_table);
             // 後ろから探索して初めて今の時間前以降になるものを取得
 
             // 遅延時間を登録
