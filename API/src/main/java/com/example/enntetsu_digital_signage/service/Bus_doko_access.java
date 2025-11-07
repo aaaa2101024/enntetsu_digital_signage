@@ -106,7 +106,6 @@ public class Bus_doko_access {
         classes.put("check_box", ".my-2.ml-0\\.5.mr-4.h-5.w-5.cursor-pointer.accent-link");// チェックボックス
         classes.put("bus_number_time_schedule", ".cursor-pointer.print\\:ml-0\\.5");// 系統番号情報
         classes.put("time_table", ".mt-6.w-full.table-fixed.border-collapse.border.border-dark-line");// 時刻表テーブル
-        classes.put("schedule_table", ".border.border-dark-line"); // 時刻表テーブルの時刻の部分
 
         WebDriver driver = null;
 
@@ -193,17 +192,30 @@ public class Bus_doko_access {
             // テーブルから情報を取得
             WebElement table = wait
                     .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(classes.get("time_table"))));
-            // テーブルを持ってくる
-            List<WebElement> input_element_time_schedule_table = table.findElements(By.cssSelector("schedule_table"));
-            HashMap<String, ArrayList<String>> time_schedule_table;
+            // tdタグで絞り込み
+            List<WebElement> time_hour_and_minite = table.findElements(By.tagName("td"));
+            // thタグで絞り込み
+            List<WebElement> hour_table = table.findElements(By.tagName("th"));
+            // 出力となるタイムテーブル
+            HashMap<String, ArrayList<String>> time_schedule_table = new HashMap<>();
             // 曜日=>N時=>m分
-            for (int i = 0; i < input_element_time_schedule_table.size() / 4; i++) {
+            // div class="mx-1"...∧!display: noneで、i * 3 + day_of_weekを持ってくる
+            for (int i = 0; i < time_hour_and_minite.size() / 3; i++) {
+                // 登録するための仮置き
                 ArrayList<String> table_temp = new ArrayList<>();
-                // div class="mx-1"...∧!display: noneで、i * 4 + day_of_week + 1を持ってくる
-                for (WebElement table_item : input_element_time_schedule_table.get(i * 4 + day_of_week + 1)) {
-
+                // liタグで絞り込み
+                List<WebElement> table_li = time_hour_and_minite.get(i * 3 + day_of_week)
+                        .findElements(By.tagName("li"));
+                // ArrayListに登録
+                for (WebElement li : table_li) {
+                    table_temp.add(li.getText());
                 }
+                // iが時間(hour)を返してくれる
+                String temp_hour = hour_table.get(i + 4).getText();
+                // 登録
+                time_schedule_table.put(temp_hour, table_temp);
             }
+            System.out.println(time_schedule_table);
             // 後ろから探索して初めて今の時間前以降になるものを取得
 
             // 遅延時間を登録
