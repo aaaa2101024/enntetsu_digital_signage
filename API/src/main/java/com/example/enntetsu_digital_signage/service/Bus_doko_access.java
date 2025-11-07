@@ -84,7 +84,7 @@ public class Bus_doko_access {
         classes.put("bus_number_schedule", "[class=\"font-bold\"]");// 発着時刻表での系統番号
         classes.put("intermidiate_stop_button",
                 ".flex.h-full.min-w-\\[2\\.5rem\\].items-center.break-all.text-xs.text-link"); // 途中のバス停
-        classes.put("board_number", ".w-\\[676px\\].space-y-4.px-6.py-4");// 系統・時刻表・のりば番号での取得
+        classes.put("board_number", ".h-full.table-fixed");// 系統・時刻表・のりば番号での取得
         classes.put("check_box", ".my-2.ml-0\\.5.mr-4.h-5.w-5.cursor-pointer.accent-link");// チェックボックス
         classes.put("bus_number_time_schedule", ".cursor-pointer.print\\:ml-0\\.5");// 系統番号情報
         classes.put("time_table", ".mt-6.w-full.table-fixed.border-collapse.border.border-dark-line");// 時刻表テーブル
@@ -136,13 +136,17 @@ public class Bus_doko_access {
 
             input_element_buttons = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(classes.get("time_intermidiate_stop"))));
             input_element_buttons.get(1).click();
-            WebElement input_element_time_schedule_button = driver
-                    .findElement(By.cssSelector(classes.get("intermidiate_stop_button")));
+            WebElement input_element_time_schedule_button = wait
+                    .until(ExpectedConditions.visibilityOfElementLocated(
+                            By.cssSelector(classes.get("intermidiate_stop_button"))));
             input_element_time_schedule_button.click();
-            try {
-                Thread.sleep(3000);
-            } catch (Exception e) {
-                // TODO: handle exception
+
+            // 乗り場番号をクリック
+            WebElement input_element_board_number = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(classes.get(
+                    "board_number"))));
+            List<WebElement> board_number_sapn = input_element_board_number.findElements(By.tagName("span"));
+            for (WebElement el : board_number_sapn) {
+                System.out.println(el.getText());
             }
 
         } catch (Exception e) {
