@@ -114,7 +114,6 @@ public class Bus_doko_access {
         WebDriver driver = null;
 
         HashMap<String, String> output = new HashMap<>();
-        output.put("delay", "");
 
         try {
             // (1) WebDriverManagerが適切なバージョンのChromedriverを自動セットアップ
@@ -221,9 +220,34 @@ public class Bus_doko_access {
                 time_schedule_table.put(temp_hour, table_temp);
             }
             // 後ろから探索して初めて今の時間前以降になるものを取得
-
+            // hour_table.size()をi>=4まで回す
+            int now_hour = Integer.parseInt(now.substring(0, 2));
+            int now_minute = Integer.parseInt(now.substring(3, 5));
+            int now_score = now_hour * 60 + now_minute;
+            boolean f = false;
+            for (int i = hour_table.size() - 1; i >= 4; i--) {
+                String hour_str = hour_table.get(i).getText();
+                ArrayList<String> minitue_table = time_schedule_table.get(hour_str);
+                for (int j = minitue_table.size() - 1; j >= 0; j--) {
+                    String minite_str = minitue_table.get(j);
+                    int hour = Integer.parseInt(hour_str.substring(0, 2));
+                    int minute = Integer.parseInt(minite_str.substring(0, 2));
+                    int score = hour * 60 + minute;
+                    System.out.println(score);
+                    System.out.println(now_score);
+                    // 初めて過去の世界になったらおｋ
+                    if (now_score >= score) {
+                        int delay = now_score - score;
+                        output.put("delay", String.valueOf(delay));
+                        f = true;
+                        break;
+                    }
+                }
+                if(f == true)
+                break;   
+            }
             // 遅延時間を登録
-
+            
         } catch (Exception e) {
             e.printStackTrace(); // エラー処理 (実際にはもっと丁寧に行う)
             return output;
