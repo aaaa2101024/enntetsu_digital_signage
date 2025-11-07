@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.ArrayList;
 
 import java.time.LocalDateTime;
@@ -105,6 +106,7 @@ public class Bus_doko_access {
         classes.put("board_number", ".h-full.table-fixed");// 系統・時刻表・のりば番号での取得
         classes.put("check_box", ".my-2.ml-0\\.5.mr-4.h-5.w-5.cursor-pointer.accent-link");// チェックボックス
         classes.put("bus_number_time_schedule", ".cursor-pointer.print\\:ml-0\\.5");// 系統番号情報
+        classes.put("time_minite", "li:not([style='display: none;'])");// 時刻表テーブル
         classes.put("time_table", ".mt-6.w-full.table-fixed.border-collapse.border.border-dark-line");// 時刻表テーブル
 
         WebDriver driver = null;
@@ -204,8 +206,11 @@ public class Bus_doko_access {
                 // 登録するための仮置き
                 ArrayList<String> table_temp = new ArrayList<>();
                 // liタグで絞り込み
-                List<WebElement> table_li = time_hour_and_minite.get(i * 3 + day_of_week)
+                List<WebElement> table_li_all = time_hour_and_minite.get(i * 3 + day_of_week)
                         .findElements(By.tagName("li"));
+                // 見えているやつのみに絞る
+                List<WebElement> table_li = table_li_all.stream().filter(li -> li.isDisplayed())
+                        .collect((Collectors.toList()));
                 // ArrayListに登録
                 for (WebElement li : table_li) {
                     table_temp.add(li.getText());
@@ -214,6 +219,7 @@ public class Bus_doko_access {
                 String temp_hour = hour_table.get(i + 4).getText();
                 // 登録
                 time_schedule_table.put(temp_hour, table_temp);
+                System.out.println(table_temp);
             }
             System.out.println(time_schedule_table);
             // 後ろから探索して初めて今の時間前以降になるものを取得
