@@ -23,9 +23,10 @@ import java.time.Duration;
 public class Bus_doko_access {
 
     // 系統番号の取得
-    public String get_bus_number(HashMap<String, String> output, HashMap<String, String> classes, WebDriver driver) {
+    public String get_bus_number(HashMap<String, String> output, HashMap<String, String> classes, WebDriverWait wait) {
         String bus_number = "";
-        WebElement input_element_bus_number = driver.findElement(By.cssSelector(classes.get("bus_number_main")));
+        WebElement input_element_bus_number = wait
+                .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(classes.get("bus_number_main"))));
         bus_number = input_element_bus_number.getText();
         output.put("bus_number", bus_number);
         return bus_number;
@@ -117,7 +118,7 @@ public class Bus_doko_access {
                             "time_intermidiate_stop"))));
 
             // 系統番号の取得と反映
-            String bus_number = get_bus_number(output, classes, driver);
+            String bus_number = get_bus_number(output, classes, wait);
 
             // 何個前のバス停かを取得
             get_previous(output, classes, driver);
