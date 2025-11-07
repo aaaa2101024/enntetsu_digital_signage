@@ -155,6 +155,7 @@ public class Bus_doko_access {
             get_departure(output, classes, wait, now, bus_number, input_element_buttons);
 
             // 遅延時間を取得
+            int delay = 0;
             // 元のメイン画面へ戻る
             driver.get(url);
 
@@ -237,17 +238,17 @@ public class Bus_doko_access {
                     System.out.println(now_score);
                     // 初めて過去の世界になったらおｋ
                     if (now_score >= score) {
-                        int delay = now_score - score;
-                        output.put("delay", String.valueOf(delay));
+                        delay = now_score - score;
                         f = true;
                         break;
                     }
                 }
-                if(f == true)
-                break;   
+                if (f == true)
+                    break;
             }
             // 遅延時間を登録
-            
+            output.put("delay", String.valueOf(delay));
+
         } catch (Exception e) {
             e.printStackTrace(); // エラー処理 (実際にはもっと丁寧に行う)
             return output;
