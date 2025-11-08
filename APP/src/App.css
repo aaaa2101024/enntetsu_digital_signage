@@ -25,10 +25,41 @@ body {
 
 /* 1行目: 方面 */
 .header {
-    font-size: 2.2em;
+    font-size: 100px;
     /* emは親要素に対する倍率 */
     font-weight: bold;
     text-align: center;
     margin-bottom: 15px;
     color: white;
+}
+
+.next {
+    font-size: 100px;
+    color: white;
+    text-align: left;
+}
+
+.orange {
+    color : orange;
+    text-align: left;
+}
+
+/* .time {
+    text-align: center;
+} */
+
+.keitou {
+        font-size: 50px;
+            color: green;
+            text-align: left;
+}
+
+.touchaku {
+        font-size: 50px;
+            color: white;
+            text-align: left;
+}
+
+.delay {
+    color: red;
 }

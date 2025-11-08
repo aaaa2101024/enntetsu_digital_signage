@@ -127,7 +127,7 @@ public class Bus_doko_access {
 
             // (2) バックエンドで動かすため、ブラウザ画面を非表示 (headless) にする
             ChromeOptions options = new ChromeOptions();
-            // options.addArguments("--headless"); // 画面なしで実行
+            options.addArguments("--headless"); // 画面なしで実行
 
             // (3) Chromeドライバを起動
             driver = new ChromeDriver(options);
