@@ -1,6 +1,6 @@
 export type Busdoko = {
-    deley: number, 
-    previous: number,
+    deley: String,
+    previous: String,
     bus_number: String,
     departure_time: String
 }

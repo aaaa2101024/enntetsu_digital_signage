@@ -1,6 +1,7 @@
 package com.example.enntetsu_digital_signage.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,22 +28,25 @@ public class Bus_doko {
     
 
     // GETリクエスト処理
+    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping("/hello")
     public String hello() {
         return "hello";
     }
     
+    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping("/scrape")
     public String scrapePage(@RequestParam(value = "url", defaultValue = "https://www.google.com") String url) {
         // (4) Serviceのメソッドを呼び出して結果を返す
         return scrapingService.getPageTitle(url);
     }
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping("/get_busdoko")
     public HashMap<String, String> get_busdoko() {
         return bus_doko_access.get_busdoko_json();
     }
-
+    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping("/test")
     public HashMap<String, String> get_test() {
         return test.test();

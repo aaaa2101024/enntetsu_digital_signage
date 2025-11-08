@@ -144,7 +144,7 @@ public class Bus_doko_access {
             int day_of_week = get_day_of_the_week();
 
             // 最大で3秒待つように指定
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(100000));
 
             // ボタン周りの値の取得
             List<WebElement> input_element_buttons = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(
