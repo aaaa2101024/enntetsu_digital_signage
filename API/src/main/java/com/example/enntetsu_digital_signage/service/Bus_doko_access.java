@@ -6,22 +6,16 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-
 import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.annotation.ObjectIdGenerators.None;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.ArrayList;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
 
@@ -32,6 +26,7 @@ public class Bus_doko_access {
     static final int SATUREDAY = 1;
     static final int SUNDAY = 2;
 
+    // 曜日を返す関数
     public int get_day_of_the_week() {
         LocalDate today = LocalDate.now();
         int day_of_week = today.getDayOfWeek().getValue();
@@ -143,7 +138,7 @@ public class Bus_doko_access {
             int day_of_week = get_day_of_the_week();
 
             // 最大で3秒待つように指定
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(100000));
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(3));
 
             // ボタン周りの値の取得
             List<WebElement> input_element_buttons = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(

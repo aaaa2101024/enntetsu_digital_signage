@@ -7,6 +7,7 @@ function App() {
 
   const [data, setData] = useState<Busdoko | null>(null);
   const [count, setCount] = useState<number>(1);
+  const [visible, setVisible] = useState<boolean>(true);
 
 
   // API取得
@@ -36,16 +37,23 @@ function App() {
     // setCount(count + 1);
     // console.error(count);
     // 2. 1分（60000ミリ秒）ごとにfetchDataを実行するタイマーを設定
+    getData();
+    setCount(count + 1);
     const intervalId = setInterval(() => {
       getData();
       setCount(count + 1);
       console.error(count);
     }, 60 * 1000); // 60秒 * 1000ミリ秒 = 1分
 
+    const intervalIdId = setInterval(() => {
+      setVisible((prevvisible) => !prevvisible);
+    }, 1 * 1000); // 60秒 * 1000ミリ秒 = 1分
+
     // 3. コンポーネントが非表示（アンマウント）になる際にタイマーを停止する
     //    これがないと、メモリリークの原因になります。
     return () => {
       clearInterval(intervalId);
+      clearInterval(intervalIdId);
     };
   }, []);
 
@@ -60,7 +68,7 @@ function App() {
           <span className="orange">次発　　　</span>
           <span className="time">{data?.departure_time}</span>
         </div>
-        <div className="keitou">{data?.bus_number}</div>
+        {visible ? <div className="keitou">{data?.bus_number}</div> : <div className="keitou">　</div>}
       </div>
       <div className="predict">
         <div className="touchaku">
