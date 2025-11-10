@@ -191,7 +191,7 @@ public class Bus_doko_access {
 
     public HashMap<String, String> get_busdoko_json() {
         // URLを設定
-        String url = "https://transfer-cloud.navitime.biz/entetsu/approachings?departure-busstop=00460589&arrival-busstop=00460590";
+        String url = "https://transfer-cloud.navitime.biz/entetsu/approachings?departure-busstop=00460589&arrival-busstop=00460001";
         // classの定義
         HashMap<String, String> classes = new HashMap<>();
         classes.put("bus_number_main", ".mx-4.mt-4.flex.justify-between"); // 系統番号
