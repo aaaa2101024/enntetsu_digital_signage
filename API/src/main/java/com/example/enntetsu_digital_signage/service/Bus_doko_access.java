@@ -93,9 +93,101 @@ public class Bus_doko_access {
         }
     }
 
+    // 遅延時間を取得
+    public int get_delay(HashMap<String, String> output, HashMap<String, String> classes, WebDriverWait wait,
+            List<WebElement> input_element_buttons, String now, String bus_number, int day_of_week) {
+        int delay = 0;
+        input_element_buttons = wait.until(ExpectedConditions
+                .visibilityOfAllElementsLocatedBy(By.cssSelector(classes.get("time_intermidiate_stop"))));
+        input_element_buttons.get(1).click();
+        WebElement input_element_time_schedule_button = wait
+                .until(ExpectedConditions.visibilityOfElementLocated(
+                        By.cssSelector(classes.get("intermidiate_stop_button"))));
+        input_element_time_schedule_button.click();
+
+        // 乗り場番号をクリック
+        WebElement input_element_board_number = wait
+                .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(classes.get(
+                        "board_number"))));
+        List<WebElement> board_number_sapn = input_element_board_number.findElements(By.tagName("span"));
+        for (WebElement span_element : board_number_sapn) {
+            if (bus_number.equals(span_element.getText())) {
+                span_element.click();
+                break;
+            }
+        }
+        // checkboxはすべて選択・解除があるので1つ最初に増える
+        List<WebElement> input_element_checkboxes = wait.until(
+                ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(classes.get("check_box"))));
+        List<WebElement> input_element_bus_number_time_schedule = wait
+                .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(classes.get(
+                        "bus_number_time_schedule"))));
+        // すべて選択・解除をクリック
+        input_element_checkboxes.get(0).click();
+        // 目的の系統番号だけクリック
+        for (int i = 0; i < input_element_bus_number_time_schedule.size(); i++) {
+            if (bus_number.equals(input_element_bus_number_time_schedule.get(i).getText())) {
+                input_element_checkboxes.get(i + 1).click();
+                break;
+            }
+        }
+        // テーブルから情報を取得
+        WebElement table = wait
+                .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(classes.get("time_table"))));
+        // tdタグで絞り込み
+        List<WebElement> time_hour_and_minite = table.findElements(By.tagName("td"));
+        // thタグで絞り込み
+        List<WebElement> hour_table = table.findElements(By.tagName("th"));
+        // 出力となるタイムテーブル
+        HashMap<String, ArrayList<String>> time_schedule_table = new HashMap<>();
+        // 曜日=>N時=>m分
+        // div class="mx-1"...∧!display: noneで、i * 3 + day_of_weekを持ってくる
+        for (int i = 0; i < time_hour_and_minite.size() / 3; i++) {
+            // 登録するための仮置き
+            ArrayList<String> table_temp = new ArrayList<>();
+            // liタグで絞り込み
+            List<WebElement> table_li_all = time_hour_and_minite.get(i * 3 + day_of_week)
+                    .findElements(By.tagName("li"));
+            // ArrayListに登録
+            for (WebElement li : table_li_all) {
+                if (!li.getText().equals(""))
+                    table_temp.add(li.getText());
+            }
+            // iが時間(hour)を返してくれる
+            String temp_hour = hour_table.get(i + 4).getText();
+            // 登録
+            time_schedule_table.put(temp_hour, table_temp);
+        }
+        // 後ろから探索して初めて今の時間前以降になるものを取得
+        // hour_table.size()をi>=4まで回す
+        int now_hour = Integer.parseInt(now.substring(0, 2));
+        int now_minute = Integer.parseInt(now.substring(3, 5));
+        int now_score = now_hour * 60 + now_minute;
+        boolean f = false;
+        for (int i = hour_table.size() - 1; i >= 4; i--) {
+            String hour_str = hour_table.get(i).getText();
+            ArrayList<String> minitue_table = time_schedule_table.get(hour_str);
+            for (int j = minitue_table.size() - 1; j >= 0; j--) {
+                String minite_str = minitue_table.get(j);
+                int hour = Integer.parseInt(hour_str.substring(0, 2));
+                int minute = Integer.parseInt(minite_str.substring(0, 2));
+                int score = hour * 60 + minute;
+                // 初めて過去の世界になったらおｋ
+                if (now_score >= score) {
+                    delay = now_score - score;
+                    f = true;
+                    break;
+                }
+            }
+            if (f == true)
+                break;
+        }
+        return delay;
+    }
+
     public HashMap<String, String> get_busdoko_json() {
         // URLを設定
-        String url = "https://transfer-cloud.navitime.biz/entetsu/approachings?departure-busstop=00460589&arrival-busstop=00460001";
+        String url = "https://transfer-cloud.navitime.biz/entetsu/approachings?departure-busstop=00460589&arrival-busstop=00460590";
         // classの定義
         HashMap<String, String> classes = new HashMap<>();
         classes.put("bus_number_main", ".mx-4.mt-4.flex.justify-between"); // 系統番号
@@ -122,7 +214,7 @@ public class Bus_doko_access {
 
             // (2) バックエンドで動かすため、ブラウザ画面を非表示 (headless) にする
             ChromeOptions options = new ChromeOptions();
-            options.addArguments("--headless"); //
+            // options.addArguments("--headless"); //
             // (3) Chromeドライバを起動
             driver = new ChromeDriver(options);
 
@@ -138,7 +230,7 @@ public class Bus_doko_access {
             int day_of_week = get_day_of_the_week();
 
             // 最大で3秒待つように指定
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(3));
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
 
             // ボタン周りの値の取得
             List<WebElement> input_element_buttons = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(
@@ -152,93 +244,8 @@ public class Bus_doko_access {
             get_previous(output, classes, wait);
 
             // 遅延時間を取得
-            int delay = 0;
+            int delay = get_delay(output, classes, wait, input_element_buttons, now, bus_number, day_of_week);
 
-            input_element_buttons = wait.until(ExpectedConditions
-                    .visibilityOfAllElementsLocatedBy(By.cssSelector(classes.get("time_intermidiate_stop"))));
-            input_element_buttons.get(1).click();
-            WebElement input_element_time_schedule_button = wait
-                    .until(ExpectedConditions.visibilityOfElementLocated(
-                            By.cssSelector(classes.get("intermidiate_stop_button"))));
-            input_element_time_schedule_button.click();
-
-            // 乗り場番号をクリック
-            WebElement input_element_board_number = wait
-                    .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(classes.get(
-                            "board_number"))));
-            List<WebElement> board_number_sapn = input_element_board_number.findElements(By.tagName("span"));
-            for (WebElement span_element : board_number_sapn) {
-                if (bus_number.equals(span_element.getText())) {
-                    span_element.click();
-                    break;
-                }
-            }
-            // checkboxはすべて選択・解除があるので1つ最初に増える
-            List<WebElement> input_element_checkboxes = wait.until(
-                    ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(classes.get("check_box"))));
-            List<WebElement> input_element_bus_number_time_schedule = wait
-                    .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(classes.get(
-                            "bus_number_time_schedule"))));
-            // すべて選択・解除をクリック
-            input_element_checkboxes.get(0).click();
-            // 目的の系統番号だけクリック
-            for (int i = 0; i < input_element_bus_number_time_schedule.size(); i++) {
-                if (bus_number.equals(input_element_bus_number_time_schedule.get(i).getText())) {
-                    input_element_checkboxes.get(i + 1).click();
-                    break;
-                }
-            }
-            // テーブルから情報を取得
-            WebElement table = wait
-                    .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(classes.get("time_table"))));
-            // tdタグで絞り込み
-            List<WebElement> time_hour_and_minite = table.findElements(By.tagName("td"));
-            // thタグで絞り込み
-            List<WebElement> hour_table = table.findElements(By.tagName("th"));
-            // 出力となるタイムテーブル
-            HashMap<String, ArrayList<String>> time_schedule_table = new HashMap<>();
-            // 曜日=>N時=>m分
-            // div class="mx-1"...∧!display: noneで、i * 3 + day_of_weekを持ってくる
-            for (int i = 0; i < time_hour_and_minite.size() / 3; i++) {
-                // 登録するための仮置き
-                ArrayList<String> table_temp = new ArrayList<>();
-                // liタグで絞り込み
-                List<WebElement> table_li_all = time_hour_and_minite.get(i * 3 + day_of_week)
-                        .findElements(By.tagName("li"));
-                // ArrayListに登録
-                for (WebElement li : table_li_all) {
-                    if (!li.getText().equals(""))
-                        table_temp.add(li.getText());
-                }
-                // iが時間(hour)を返してくれる
-                String temp_hour = hour_table.get(i + 4).getText();
-                // 登録
-                time_schedule_table.put(temp_hour, table_temp);
-            }
-            // 後ろから探索して初めて今の時間前以降になるものを取得
-            // hour_table.size()をi>=4まで回す
-            int now_hour = Integer.parseInt(now.substring(0, 2));
-            int now_minute = Integer.parseInt(now.substring(3, 5));
-            int now_score = now_hour * 60 + now_minute;
-            boolean f = false;
-            for (int i = hour_table.size() - 1; i >= 4; i--) {
-                String hour_str = hour_table.get(i).getText();
-                ArrayList<String> minitue_table = time_schedule_table.get(hour_str);
-                for (int j = minitue_table.size() - 1; j >= 0; j--) {
-                    String minite_str = minitue_table.get(j);
-                    int hour = Integer.parseInt(hour_str.substring(0, 2));
-                    int minute = Integer.parseInt(minite_str.substring(0, 2));
-                    int score = hour * 60 + minute;
-                    // 初めて過去の世界になったらおｋ
-                    if (now_score >= score) {
-                        delay = now_score - score;
-                        f = true;
-                        break;
-                    }
-                }
-                if (f == true)
-                    break;
-            }
             // 遅延時間を登録
             output.put("delay", String.valueOf(delay));
 
