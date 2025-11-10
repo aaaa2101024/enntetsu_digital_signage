@@ -218,42 +218,51 @@ public class Bus_doko_access {
             // (3) Chromeドライバを起動
             driver = new ChromeDriver(options);
 
-            // (4) 指定されたURLにアクセス
-            driver.get(url);
+            // 正しく値が得られるまで実行する
+            while (true) {
+                // (4) 指定されたURLにアクセス
+                driver.get(url);
 
-            // 現在の時刻を取得
-            DateTimeFormatter time_formatter = DateTimeFormatter.ofPattern("HH:mm");
-            LocalDateTime date_type_now = LocalDateTime.now();
-            String now = date_type_now.format(time_formatter);
+                // 現在の時刻を取得
+                DateTimeFormatter time_formatter = DateTimeFormatter.ofPattern("HH:mm");
+                LocalDateTime date_type_now = LocalDateTime.now();
+                String now = date_type_now.format(time_formatter);
 
-            // 曜日を判定
-            int day_of_week = get_day_of_the_week();
+                // 曜日を判定
+                int day_of_week = get_day_of_the_week();
 
-            // 最大で3秒待つように指定
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
+                // 最大で60秒待つように指定
+                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
 
-            // ボタン周りの値の取得
-            List<WebElement> input_element_buttons = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(
-                    By.cssSelector(classes.get(
-                            "time_intermidiate_stop"))));
+                // ボタン周りの値の取得
+                List<WebElement> input_element_buttons = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(
+                        By.cssSelector(classes.get(
+                                "time_intermidiate_stop"))));
 
-            // 系統番号の取得と反映
-            String bus_number = get_bus_number(output, classes, wait);
+                // 系統番号の取得と反映
+                String bus_number = get_bus_number(output, classes, wait);
 
-            // 何個前のバス停かを取得
-            get_previous(output, classes, wait);
+                // 何個前のバス停かを取得
+                get_previous(output, classes, wait);
 
-            // 遅延時間を取得
-            int delay = get_delay(output, classes, wait, input_element_buttons, now, bus_number, day_of_week);
+                // 遅延時間を取得
+                int delay = get_delay(output, classes, wait, input_element_buttons, now, bus_number, day_of_week);
 
-            // 遅延時間を登録
-            output.put("delay", String.valueOf(delay));
+                // 遅延時間を登録
+                output.put("delay", String.valueOf(delay));
 
-            // 元のメイン画面へ戻る
-            driver.get(url);
+                // 元のメイン画面へ戻る
+                driver.get(url);
 
-            // 本来の出発時刻を取得
-            get_departure(output, classes, wait, now, bus_number, delay);
+                // 系統番号が違ったらやり直す
+                String test_bus_number = get_bus_number(output, classes, wait);
+                if (!bus_number.equals(test_bus_number)) {
+                    continue;
+                }
+                // 本来の出発時刻を取得
+                get_departure(output, classes, wait, now, bus_number, delay);
+                break;
+            }
 
         } catch (Exception e) {
             e.printStackTrace(); // エラー処理 (実際にはもっと丁寧に行う)
