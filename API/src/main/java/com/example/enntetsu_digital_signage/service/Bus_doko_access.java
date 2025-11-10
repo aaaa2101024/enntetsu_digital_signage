@@ -122,13 +122,17 @@ public class Bus_doko_access {
         List<WebElement> input_element_bus_number_time_schedule = wait
                 .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(classes.get(
                         "bus_number_time_schedule"))));
-        // すべて選択・解除をクリック
-        input_element_checkboxes.get(0).click();
-        // 目的の系統番号だけクリック
-        for (int i = 0; i < input_element_bus_number_time_schedule.size(); i++) {
-            if (bus_number.equals(input_element_bus_number_time_schedule.get(i).getText())) {
-                input_element_checkboxes.get(i + 1).click();
-                break;
+
+        // checkboxがある場合の処理
+        if (!input_element_checkboxes.isEmpty()) {
+            // すべて選択・解除をクリック
+            input_element_checkboxes.get(0).click();
+            // 目的の系統番号だけクリック
+            for (int i = 0; i < input_element_bus_number_time_schedule.size(); i++) {
+                if (bus_number.equals(input_element_bus_number_time_schedule.get(i).getText())) {
+                    input_element_checkboxes.get(i + 1).click();
+                    break;
+                }
             }
         }
         // テーブルから情報を取得
@@ -218,6 +222,9 @@ public class Bus_doko_access {
             // (3) Chromeドライバを起動
             driver = new ChromeDriver(options);
 
+            // 最大で60秒待つように指定
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
+
             // 正しく値が得られるまで実行する
             while (true) {
                 // (4) 指定されたURLにアクセス
@@ -230,9 +237,6 @@ public class Bus_doko_access {
 
                 // 曜日を判定
                 int day_of_week = get_day_of_the_week();
-
-                // 最大で60秒待つように指定
-                WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
 
                 // ボタン周りの値の取得
                 List<WebElement> input_element_buttons = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(
@@ -268,7 +272,6 @@ public class Bus_doko_access {
             e.printStackTrace(); // エラー処理 (実際にはもっと丁寧に行う)
             return output;
         } finally {
-            // (6) 必ずドライバを終了する
             if (driver != null) {
                 driver.quit();
             }
