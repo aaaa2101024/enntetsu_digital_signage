@@ -127,16 +127,16 @@ public class Bus_doko_access {
         if (!input_element_checkboxes.isEmpty()) {
             // すべて選択・解除をクリック
             input_element_checkboxes.get(0).click();
+            // checkboxが外れるまで待機
+            int size_of_bus_number = input_element_bus_number_time_schedule.size();
+            wait.until(
+                    ExpectedConditions.elementSelectionStateToBe(input_element_bus_number_time_schedule.get(0), false));
+            wait.until(
+                    ExpectedConditions.elementSelectionStateToBe(input_element_bus_number_time_schedule.get(size_of_bus_number - 1), false));
             // 目的の系統番号だけクリック
-            for (int i = 0; i < input_element_bus_number_time_schedule.size(); i++) {
-                System.out.println(input_element_bus_number_time_schedule.get(i).getText());
-            }
-            // すべて選択・解除が作動したことを確認する
-            wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(classes.get("hidden-checkbox"))));
-            System.out.println(input_element_checkboxes.size());
-            for (int i = 0; i < input_element_bus_number_time_schedule.size(); i++) {
+            for (int i = 0; i < size_of_bus_number; i++) {
                 if (bus_number.equals(input_element_bus_number_time_schedule.get(i).getText())) {
-                    input_element_checkboxes.get(i + 1).click();
+                    input_element_bus_number_time_schedule.get(i).click();
                     break;
                 }
             }
