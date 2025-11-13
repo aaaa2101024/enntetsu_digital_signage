@@ -129,6 +129,12 @@ public class Bus_doko_access {
             input_element_checkboxes.get(0).click();
             // 目的の系統番号だけクリック
             for (int i = 0; i < input_element_bus_number_time_schedule.size(); i++) {
+                System.out.println(input_element_bus_number_time_schedule.get(i).getText());
+            }
+            // すべて選択・解除が作動したことを確認する
+            wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(classes.get("hidden-checkbox"))));
+            System.out.println(input_element_checkboxes.size());
+            for (int i = 0; i < input_element_bus_number_time_schedule.size(); i++) {
                 if (bus_number.equals(input_element_bus_number_time_schedule.get(i).getText())) {
                     input_element_checkboxes.get(i + 1).click();
                     break;
@@ -204,6 +210,7 @@ public class Bus_doko_access {
                 ".flex.h-full.min-w-\\[2\\.5rem\\].items-center.break-all.text-xs.text-link"); // 途中のバス停
         classes.put("board_number", ".h-full.table-fixed");// 系統・時刻表・のりば番号での取得
         classes.put("check_box", ".my-2.ml-0\\.5.mr-4.h-5.w-5.cursor-pointer.accent-link");// チェックボックス
+        classes.put("hidden-checkbox", ".border-b.border-b-light-line.print:hidden"); // チェックボックスがオフである
         classes.put("bus_number_time_schedule", ".cursor-pointer.print\\:ml-0\\.5");// 系統番号情報
         classes.put("time_minite", "li:not([style='display: none;'])");// 時刻表テーブル
         classes.put("time_table", ".mt-6.w-full.table-fixed.border-collapse.border.border-dark-line");// 時刻表テーブル
