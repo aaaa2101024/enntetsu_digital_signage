@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import './App.css'
-import axios from 'axios';
 import type { Busdoko } from "./type/busdoko.type";
 
 function App() {
@@ -57,6 +56,20 @@ function App() {
     };
   }, []);
 
+  if (data == null) {
+    return (
+      <>
+        <div className="singboard">
+          <div className="header">
+            六間坂上　浜松駅方面
+          </div>
+        </div>
+        <div className="standby">
+          ★　調　整　中　★
+        </div>
+      </>
+    )
+  }
 
   return (
     <>
@@ -72,7 +85,6 @@ function App() {
       </div>
       <div className="predict">
         <div className="touchaku">
-          <span></span>
           <span className="delay">遅れ約 {data?.delay} 分</span>
           <div>ただいま {data?.previous} 個前を走行中...</div>
         </div>
