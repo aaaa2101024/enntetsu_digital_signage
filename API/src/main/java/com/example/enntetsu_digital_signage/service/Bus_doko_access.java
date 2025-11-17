@@ -123,21 +123,17 @@ public class Bus_doko_access {
                 .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(classes.get(
                         "bus_number_time_schedule"))));
 
-        // checkboxがある場合の処理
+        int size_of_bus_number = input_element_bus_number_time_schedule.size();
         if (!input_element_checkboxes.isEmpty()) {
-            // すべて選択・解除をクリック
-            input_element_checkboxes.get(0).click();
-            // checkboxが外れるまで待機
-            int size_of_bus_number = input_element_bus_number_time_schedule.size();
-            wait.until(
-                    ExpectedConditions.elementSelectionStateToBe(input_element_bus_number_time_schedule.get(0), false));
-            wait.until(
-                    ExpectedConditions.elementSelectionStateToBe(input_element_bus_number_time_schedule.get(size_of_bus_number - 1), false));
-            // 目的の系統番号だけクリック
+            // 目的の系統番号以外をクリック
             for (int i = 0; i < size_of_bus_number; i++) {
-                if (bus_number.equals(input_element_bus_number_time_schedule.get(i).getText())) {
+                // 毎回再取得することで動作を安定化する
+                input_element_bus_number_time_schedule = wait
+                        .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(classes.get(
+                                "bus_number_time_schedule"))));
+                if (!bus_number.equals(input_element_bus_number_time_schedule.get(i).getText())) {
                     input_element_bus_number_time_schedule.get(i).click();
-                    break;
+                    System.out.println(i);
                 }
             }
         }
