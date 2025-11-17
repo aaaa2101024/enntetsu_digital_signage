@@ -123,15 +123,17 @@ public class Bus_doko_access {
                 .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(classes.get(
                         "bus_number_time_schedule"))));
 
-        // checkboxがある場合の処理
+        int size_of_bus_number = input_element_bus_number_time_schedule.size();
         if (!input_element_checkboxes.isEmpty()) {
-            // すべて選択・解除をクリック
-            input_element_checkboxes.get(0).click();
-            // 目的の系統番号だけクリック
-            for (int i = 0; i < input_element_bus_number_time_schedule.size(); i++) {
-                if (bus_number.equals(input_element_bus_number_time_schedule.get(i).getText())) {
-                    input_element_checkboxes.get(i + 1).click();
-                    break;
+            // 目的の系統番号以外をクリック
+            for (int i = 0; i < size_of_bus_number; i++) {
+                // 毎回再取得することで動作を安定化する
+                input_element_bus_number_time_schedule = wait
+                        .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(classes.get(
+                                "bus_number_time_schedule"))));
+                if (!bus_number.equals(input_element_bus_number_time_schedule.get(i).getText())) {
+                    input_element_bus_number_time_schedule.get(i).click();
+                    System.out.println(i);
                 }
             }
         }
@@ -204,6 +206,7 @@ public class Bus_doko_access {
                 ".flex.h-full.min-w-\\[2\\.5rem\\].items-center.break-all.text-xs.text-link"); // 途中のバス停
         classes.put("board_number", ".h-full.table-fixed");// 系統・時刻表・のりば番号での取得
         classes.put("check_box", ".my-2.ml-0\\.5.mr-4.h-5.w-5.cursor-pointer.accent-link");// チェックボックス
+        classes.put("hidden-checkbox", ".border-b.border-b-light-line.print:hidden"); // チェックボックスがオフである
         classes.put("bus_number_time_schedule", ".cursor-pointer.print\\:ml-0\\.5");// 系統番号情報
         classes.put("time_minite", "li:not([style='display: none;'])");// 時刻表テーブル
         classes.put("time_table", ".mt-6.w-full.table-fixed.border-collapse.border.border-dark-line");// 時刻表テーブル
