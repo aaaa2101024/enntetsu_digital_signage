@@ -5,7 +5,8 @@ import type { JSX } from "react"
 
 function App() {
 
-  const [data, setData] = useState<Busdoko | null>(null);
+  const [next, setNext] = useState<Busdoko | null>(null);
+  const [nextnext, setNextNext] = useState<Busdoko | null>(null);
   const [count, setCount] = useState<number>(1);
   const [visible, setVisible] = useState<boolean>(true);
 
@@ -20,13 +21,13 @@ function App() {
         if (!response.ok) {
           // response.ok はステータスが200番台かどうかを true/false で示す
           console.error(`HTTP error! Status: ${response.status}`);
-          throw new Error(`Failed to fetch data: ${response.statusText}`);
+          throw new Error(`Failed to fetch next: ${response.statusText}`);
         }
 
-        const jsondata = await response.json();
+        const jsonnext = await response.json();
 
-        if (jsondata.departure_time != null)
-          setData(jsondata);
+        if (jsonnext.departure_time != null)
+          setNext(jsonnext);
         else
           console.error("データの取得に失敗")
       } catch (error) {
@@ -36,9 +37,6 @@ function App() {
       }
     };
 
-    // getData();
-    // setCount(count + 1);
-    // console.error(count);
     // 2. 1分（60000ミリ秒）ごとにfetchDataを実行するタイマーを設定
     getData();
     setCount(count + 1);
@@ -60,7 +58,7 @@ function App() {
     };
   }, []);
 
-  if (data == null) {
+  if (next == null) {
     return (
       <>
         <div className="singboard">
@@ -79,13 +77,14 @@ function App() {
     <div className="bus_item">
       <div className="next">
         <span className="orange">次発</span>
-        {visible ? <span className="keitou">{data?.bus_number}　</span> : <span className="toumei">{data?.bus_number}　</span>}
-        <span className="time">{data?.departure_time}</span>
+        {/* 5個前より手前なら点滅させる */}
+        {visible || Number(next.previous) > 5? <span className="keitou">{next?.bus_number}</span> : <span className="toumei"></span>}
+        <span className="time">{next?.departure_time}</span>
       </div>
       <div className="predict">
         <div className="touchaku">
-          <span className="delay">遅れ約 {data?.delay} 分</span>
-          <div>ただいま {data?.previous} 個前を走行中...</div>
+          <span className="delay">遅れ約 {next?.delay} 分</span>
+          <div>ただいま {next?.previous} 個前を走行中...</div>
         </div>
       </div>
     </div>
@@ -95,13 +94,13 @@ function App() {
     <div className="bus_item">
       <div className="next">
         <span className="orange">次次発</span>
-        {visible ? <span className="keitou">{data?.bus_number}　</span> : <span className="toumei">{data?.bus_number}　</span>}
-        <span className="time">{data?.departure_time}</span>
+        {visible ? <span className="keitou">{nextnext?.bus_number}　</span> : <span className="toumei">{nextnext?.bus_number}　</span>}
+        <span className="time">{nextnext?.departure_time}</span>
       </div>
       <div className="predict">
         <div className="touchaku">
-          <span className="delay">遅れ約 {data?.delay} 分</span>
-          <div>ただいま {data?.previous} 個前を走行中...</div>
+          <span className="delay">遅れ約 {nextnext?.delay} 分</span>
+          <div>ただいま {nextnext?.previous} 個前を走行中...</div>
         </div>
       </div>
     </div>
