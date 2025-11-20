@@ -78,15 +78,12 @@ function App() {
       <div className="next">
         <span className="orange">次発</span>
         {/* 5個前より手前なら点滅させる */}
-        {visible || Number(next.previous) > 5? <span className="keitou">{next?.bus_number}</span> : <span className="toumei"></span>}
+        {visible || Number(next.previous) > 5 ? <span className="keitou">{next?.bus_number}</span> : <span className="toumei"></span>}
         <span className="time">{next?.departure_time}</span>
       </div>
-      <div className="predict">
-        <div className="touchaku">
-          <span className="delay">遅れ約 {next?.delay} 分</span>
-          <div>ただいま {next?.previous} 個前を走行中...</div>
-        </div>
-      </div>
+      <div className="delay">{Number(next.delay) != 0 && `遅れ約 ${next?.delay} 分`}</div>
+      <div className="touchaku">ただいま {next?.previous} 個前を走行中...</div>
+      <div className="delay">{Number(next.delay) == 0 && <br></br>}</div>
     </div>
   )
 
@@ -94,7 +91,7 @@ function App() {
     <div className="bus_item">
       <div className="next">
         <span className="orange">次次発</span>
-        {visible ? <span className="keitou">{nextnext?.bus_number}　</span> : <span className="toumei">{nextnext?.bus_number}　</span>}
+        {visible ? <span className="keitou">{nextnext?.bus_number}</span> : <span className="toumei">{nextnext?.bus_number}</span>}
         <span className="time">{nextnext?.departure_time}</span>
       </div>
       <div className="predict">
