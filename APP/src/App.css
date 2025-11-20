@@ -19,8 +19,6 @@ body {
     border-radius: 5px;
     /* 少し角を丸くする */
     width: 90%;
-    max-width: 550px;
-    /* 最大幅を指定 */
 }
 
 /* 1行目: 方面 */
@@ -31,6 +29,7 @@ body {
     text-align: center;
     margin-bottom: 10px;
     color: white;
+    white-space: nowrap;
 }
 
 .standby {
@@ -46,32 +45,47 @@ body {
     color: green;
 }
 
+.bus_item {
+    margin-top: 50px;
+    white-space: nowrap;
+}
+
 
 .next {
-    font-size: 65px;
+    font-size: 55px;
     color: white;
-    text-align: left;
+    /* 子要素を横並びにする */
+    display: flex;
+    /* コンテナ全体を画面の中央に配置 */
+    margin: 0 auto;
+    /* 3つのカラムの幅の合計 (200 + 800 + 300 = 1300px) */
+    width: 1300px;
 }
 
 .orange {
     color: orange;
     text-align: left;
+    margin: 0 auto;
+    width: 200px;
 }
 
-/* .time {
-    text-align: center;
-} */
-
 .keitou {
-    font-size: 65px;
+    font-size: 55px;
     color: green;
-    text-align: left;
+    text-align: center;
+    width: 800px;
 }
 
 .toumei {
-    font-size: 65px;
+    font-size: 55px;
     color: black;
     text-align: left;
+    width: 800px;
+}
+
+.time {
+    text-align: center;
+    width: 300px;
 }
 
 .touchaku {

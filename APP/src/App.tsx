@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import './App.css'
 import type { Busdoko } from "./type/busdoko.type";
+import type { JSX } from "react"
 
 function App() {
 
@@ -24,7 +25,10 @@ function App() {
 
         const jsondata = await response.json();
 
-        setData(jsondata);
+        if (jsondata.departure_time != null)
+          setData(jsondata);
+        else
+          console.error("データの取得に失敗")
       } catch (error) {
         console.error(error);
         console.error("fetchできません")
@@ -71,23 +75,47 @@ function App() {
     )
   }
 
-  return (
-    <>
-      <div className="singboard">
-        <div className="header">
-          六間坂上　浜松駅方面
-        </div>
-        <div className="next">
-          <span className="orange">次発　</span>
-          {visible ? <span className="keitou">{data?.bus_number}　</span> : <span className="toumei">{data?.bus_number}　</span>}
-          <span className="time">{data?.departure_time}</span>
-        </div>
+  const next_departure: JSX.Element = (
+    <div className="bus_item">
+      <div className="next">
+        <span className="orange">次発</span>
+        {visible ? <span className="keitou">{data?.bus_number}　</span> : <span className="toumei">{data?.bus_number}　</span>}
+        <span className="time">{data?.departure_time}</span>
       </div>
       <div className="predict">
         <div className="touchaku">
           <span className="delay">遅れ約 {data?.delay} 分</span>
           <div>ただいま {data?.previous} 個前を走行中...</div>
         </div>
+      </div>
+    </div>
+  )
+
+  const next_next_depature: JSX.Element = (
+    <div className="bus_item">
+      <div className="next">
+        <span className="orange">次次発</span>
+        {visible ? <span className="keitou">{data?.bus_number}　</span> : <span className="toumei">{data?.bus_number}　</span>}
+        <span className="time">{data?.departure_time}</span>
+      </div>
+      <div className="predict">
+        <div className="touchaku">
+          <span className="delay">遅れ約 {data?.delay} 分</span>
+          <div>ただいま {data?.previous} 個前を走行中...</div>
+        </div>
+      </div>
+    </div>
+  )
+
+
+  return (
+    <>
+      <div className="signboard">
+        <div className="header">
+          六間坂上　浜松駅方面
+        </div>
+        {next_departure}
+        {next_next_depature}
       </div>
     </>
   )
