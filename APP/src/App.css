@@ -25,11 +25,11 @@ body {
 
 /* 1行目: 方面 */
 .header {
-    font-size: 100px;
+    font-size: 75px;
     /* emは親要素に対する倍率 */
     font-weight: bold;
     text-align: center;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     color: white;
 }
 
@@ -48,7 +48,7 @@ body {
 
 
 .next {
-    font-size: 100px;
+    font-size: 65px;
     color: white;
     text-align: left;
 }
@@ -63,8 +63,14 @@ body {
 } */
 
 .keitou {
-    font-size: 50px;
+    font-size: 65px;
     color: green;
+    text-align: left;
+}
+
+.toumei {
+    font-size: 65px;
+    color: black;
     text-align: left;
 }
 

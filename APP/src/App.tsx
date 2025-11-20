@@ -78,10 +78,10 @@ function App() {
           六間坂上　浜松駅方面
         </div>
         <div className="next">
-          <span className="orange">次発　　　</span>
+          <span className="orange">次発　</span>
+          {visible ? <span className="keitou">{data?.bus_number}　</span> : <span className="toumei">{data?.bus_number}　</span>}
           <span className="time">{data?.departure_time}</span>
         </div>
-        {visible ? <div className="keitou">{data?.bus_number}</div> : <div className="keitou">　</div>}
       </div>
       <div className="predict">
         <div className="touchaku">
