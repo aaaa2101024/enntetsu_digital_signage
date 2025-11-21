@@ -49,10 +49,10 @@ public class Bus_doko_access {
     }
 
     // 何個前のバス停かを取得
-    public void get_previous(HashMap<String, String> output, HashMap<String, String> classes, WebDriver driver) {
+    public void get_previous(HashMap<String, String> output, HashMap<String, String> classes, WebDriver driver, int departure_number) {
         String input = "";
         List<WebElement> input_element_previous = driver.findElements(By.cssSelector(classes.get("previous")));
-        input = input_element_previous.get(0).getText();
+        input = input_element_previous.get(departure_number).getText();
         output.put("previous", input);
     }
 
@@ -253,7 +253,7 @@ public class Bus_doko_access {
                 // 何個前のバス停かを取得
                 // previousが存在しない場合は始発駅発車前
                 try {
-                    get_previous(output, classes, driver);               
+                    get_previous(output, classes, driver, departure_num);
                 } catch (Exception e) {
                     output.put("previous", "始発駅発車前");
                 }
