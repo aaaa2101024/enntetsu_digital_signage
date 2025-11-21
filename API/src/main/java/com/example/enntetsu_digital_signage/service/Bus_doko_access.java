@@ -26,6 +26,9 @@ public class Bus_doko_access {
     static final int SATUREDAY = 1;
     static final int SUNDAY = 2;
 
+    static final int BUTTONS_MULTIPLE = 2;
+    static final int DELAY_BUTTON = 1;
+
     // 曜日を返す関数
     public int get_day_of_the_week() {
         LocalDate today = LocalDate.now();
@@ -43,7 +46,7 @@ public class Bus_doko_access {
         String bus_number = "";
         List<WebElement> input_element_bus_number = wait
                 .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(classes.get("bus_number_main"))));
-        bus_number = input_element_bus_number.get(departure_number).getText();
+        bus_number = input_element_bus_number.get(departure_number * BUTTONS_MULTIPLE).getText();
         output.put("bus_number", bus_number);
         return bus_number;
     }
@@ -52,20 +55,20 @@ public class Bus_doko_access {
     public void get_previous(HashMap<String, String> output, HashMap<String, String> classes, WebDriver driver, int departure_number) {
         String input = "";
         List<WebElement> input_element_previous = driver.findElements(By.cssSelector(classes.get("previous")));
-        input = input_element_previous.get(departure_number).getText();
+        input = input_element_previous.get(departure_number * BUTTONS_MULTIPLE).getText();
         output.put("previous", input);
     }
 
     // 本来の出発時刻を取得
     public void get_departure(HashMap<String, String> output, HashMap<String, String> classes,
             WebDriverWait wait,
-            String now, String bus_number, int delay) {
+            String now, String bus_number, int delay, int departure_number) {
         // ボタン周りの値の取得
         List<WebElement> input_element_buttons = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(
                 By.cssSelector(classes.get(
                         "time_intermidiate_stop"))));
 
-        input_element_buttons.get(0).click();
+        input_element_buttons.get(departure_number * BUTTONS_MULTIPLE).click();
         // 時刻を取得
         List<WebElement> input_element_time_schedule = wait
                 .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(classes.get(
@@ -94,11 +97,11 @@ public class Bus_doko_access {
 
     // 遅延時間を取得
     public int get_delay(HashMap<String, String> output, HashMap<String, String> classes, WebDriverWait wait,
-            List<WebElement> input_element_buttons, String now, String bus_number, int day_of_week) {
+            List<WebElement> input_element_buttons, String now, String bus_number, int day_of_week, int departure_number) {
         int delay = 0;
         input_element_buttons = wait.until(ExpectedConditions
                 .visibilityOfAllElementsLocatedBy(By.cssSelector(classes.get("time_intermidiate_stop"))));
-        input_element_buttons.get(1).click();
+        input_element_buttons.get(DELAY_BUTTON + BUTTONS_MULTIPLE * departure_number).click();
         WebElement input_element_time_schedule_button = wait
                 .until(ExpectedConditions.visibilityOfElementLocated(
                         By.cssSelector(classes.get("intermidiate_stop_button"))));
@@ -190,7 +193,7 @@ public class Bus_doko_access {
         return delay;
     }
 
-    public HashMap<String, String> get_busdoko_json(int departure_num) {
+    public HashMap<String, String> get_busdoko_json(int departure_number) {
         // URLを設定
         String url = "https://transfer-cloud.navitime.biz/entetsu/approachings?departure-busstop=00460589&arrival-busstop=00460001";
         // classの定義
@@ -248,18 +251,18 @@ public class Bus_doko_access {
                                 "time_intermidiate_stop"))));
 
                 // 系統番号の取得と反映
-                String bus_number = get_bus_number(output, classes, wait, departure_num);
+                String bus_number = get_bus_number(output, classes, wait, departure_number);
 
                 // 何個前のバス停かを取得
                 // previousが存在しない場合は始発駅発車前
                 try {
-                    get_previous(output, classes, driver, departure_num);
+                    get_previous(output, classes, driver, departure_number);
                 } catch (Exception e) {
                     output.put("previous", "始発駅発車前");
                 }
 
                 // 遅延時間を取得
-                int delay = get_delay(output, classes, wait, input_element_buttons, now, bus_number, day_of_week);
+                int delay = get_delay(output, classes, wait, input_element_buttons, now, bus_number, day_of_week, departure_number);
 
                 // 遅延時間を登録
                 output.put("delay", String.valueOf(delay));
@@ -268,12 +271,12 @@ public class Bus_doko_access {
                 driver.get(url);
 
                 // 系統番号が違ったらやり直す
-                String test_bus_number = get_bus_number(output, classes, wait, departure_num);
+                String test_bus_number = get_bus_number(output, classes, wait, departure_number);
                 if (!bus_number.equals(test_bus_number)) {
                     continue;
                 }
                 // 本来の出発時刻を取得
-                get_departure(output, classes, wait, now, bus_number, delay);
+                get_departure(output, classes, wait, now, bus_number, delay, departure_number);
                 break;
             }
 

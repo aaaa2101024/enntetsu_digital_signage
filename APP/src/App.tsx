@@ -14,10 +14,11 @@ function App() {
   // API取得
   useEffect(() => {
     const getData = async () => {
-      const url = "http://localhost:8080/get_busdoko";
+      const url_next = "http://localhost:8080/get_busdoko";
+      const url_next_next = "http://localhost:8080/get_busdoko_next_next";
       console.error("hoge");
       try {
-        const response = await fetch(url);
+        const response = await fetch(url_next);
         if (!response.ok) {
           // response.ok はステータスが200番台かどうかを true/false で示す
           console.error(`HTTP error! Status: ${response.status}`);
