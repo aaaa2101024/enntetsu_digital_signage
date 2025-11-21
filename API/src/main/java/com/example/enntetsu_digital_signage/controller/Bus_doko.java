@@ -42,14 +42,20 @@ public class Bus_doko {
     }
 
     @CrossOrigin(origins = "http://localhost:5173")
-    @GetMapping("/get_busdoko")
-    public HashMap<String, String> get_busdoko() {
-        return bus_doko_access.get_busdoko_json();
-    }
-    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping("/test")
     public HashMap<String, String> get_test() {
         return test.test();
     }
 
+    @CrossOrigin(origins = "http://localhost:5173")
+    @GetMapping("/get_busdoko")
+    public HashMap<String, String> get_busdoko() {
+        return bus_doko_access.get_busdoko_json(0);
+    }
+    
+    @CrossOrigin(origins = "http://localhost:5173")
+    @GetMapping("/get_busdoko_next_next")
+    public HashMap<String, String> get_busdoko_next_next() {
+        return bus_doko_access.get_busdoko_json(1);
+    }
 }

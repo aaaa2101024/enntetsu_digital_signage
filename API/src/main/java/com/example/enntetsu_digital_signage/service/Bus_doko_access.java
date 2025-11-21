@@ -39,20 +39,19 @@ public class Bus_doko_access {
     }
 
     // 系統番号の取得
-    public String get_bus_number(HashMap<String, String> output, HashMap<String, String> classes, WebDriverWait wait) {
+    public String get_bus_number(HashMap<String, String> output, HashMap<String, String> classes, WebDriverWait wait, int departure_number) {
         String bus_number = "";
-        WebElement input_element_bus_number = wait
-                .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(classes.get("bus_number_main"))));
-        bus_number = input_element_bus_number.getText();
+        List<WebElement> input_element_bus_number = wait
+                .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(classes.get("bus_number_main"))));
+        bus_number = input_element_bus_number.get(departure_number).getText();
         output.put("bus_number", bus_number);
         return bus_number;
     }
 
     // 何個前のバス停かを取得
-    public void get_previous(HashMap<String, String> output, HashMap<String, String> classes, WebDriverWait wait) {
+    public void get_previous(HashMap<String, String> output, HashMap<String, String> classes, WebDriver driver) {
         String input = "";
-        List<WebElement> input_element_previous = wait
-                .until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(classes.get("between"))));
+        List<WebElement> input_element_previous = driver.findElements(By.cssSelector(classes.get("previous")));
         input = input_element_previous.get(0).getText();
         output.put("previous", input);
     }
@@ -191,7 +190,7 @@ public class Bus_doko_access {
         return delay;
     }
 
-    public HashMap<String, String> get_busdoko_json() {
+    public HashMap<String, String> get_busdoko_json(int departure_num) {
         // URLを設定
         String url = "https://transfer-cloud.navitime.biz/entetsu/approachings?departure-busstop=00460589&arrival-busstop=00460001";
         // classの定義
@@ -199,7 +198,9 @@ public class Bus_doko_access {
         classes.put("bus_number_main", ".mx-4.mt-4.flex.justify-between"); // 系統番号
         classes.put("time_intermidiate_stop",
                 ".flex.items-center.justify-center.rounded.border.border-button.bg-white.px-2.text-button.hover\\:no-underline.w-auto.h-10.text-base.grow"); // ボタン
-        classes.put("between", ".mx-1.text-2xl"); // 途中バス停
+        classes.put("previous", ".mx-1.text-2xl"); // 途中バス停
+        // classes.put("before_departure",
+        // ".my-3.text-center.font-bold.text-error.text-lg"); // 始発駅発車前
         classes.put("time_schedule", "[class=\"text-[22px] font-bold\"]"); // 発車時刻・到着時刻
         classes.put("bus_number_schedule", "[class=\"font-bold\"]");// 発着時刻表での系統番号
         classes.put("intermidiate_stop_button",
@@ -221,7 +222,7 @@ public class Bus_doko_access {
 
             // (2) バックエンドで動かすため、ブラウザ画面を非表示 (headless) にする
             ChromeOptions options = new ChromeOptions();
-            options.addArguments("--headless"); 
+            options.addArguments("--headless");
             // (3) Chromeドライバを起動
             driver = new ChromeDriver(options);
 
@@ -247,10 +248,15 @@ public class Bus_doko_access {
                                 "time_intermidiate_stop"))));
 
                 // 系統番号の取得と反映
-                String bus_number = get_bus_number(output, classes, wait);
+                String bus_number = get_bus_number(output, classes, wait, departure_num);
 
                 // 何個前のバス停かを取得
-                get_previous(output, classes, wait);
+                // previousが存在しない場合は始発駅発車前
+                try {
+                    get_previous(output, classes, driver);               
+                } catch (Exception e) {
+                    output.put("previous", "始発駅発車前");
+                }
 
                 // 遅延時間を取得
                 int delay = get_delay(output, classes, wait, input_element_buttons, now, bus_number, day_of_week);
@@ -262,7 +268,7 @@ public class Bus_doko_access {
                 driver.get(url);
 
                 // 系統番号が違ったらやり直す
-                String test_bus_number = get_bus_number(output, classes, wait);
+                String test_bus_number = get_bus_number(output, classes, wait, departure_num);
                 if (!bus_number.equals(test_bus_number)) {
                     continue;
                 }
