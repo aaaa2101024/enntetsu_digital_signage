@@ -13,9 +13,8 @@ function App() {
 
   // API取得
   useEffect(() => {
-    const getData = async () => {
+    const getData_next = async () => {
       const url_next = "http://localhost:8080/get_busdoko";
-      const url_next_next = "http://localhost:8080/get_busdoko_next_next";
       console.error("hoge");
       try {
         const response = await fetch(url_next);
@@ -38,11 +37,36 @@ function App() {
       }
     };
 
+    const getData_next_next = async () => {
+      const url_next_next = "http://localhost:8080/get_busdoko_next_next";
+      console.error("hoge");
+      try {
+        const response = await fetch(url_next_next);
+        if (!response.ok) {
+          // response.ok はステータスが200番台かどうかを true/false で示す
+          console.error(`HTTP error! Status: ${response.status}`);
+          throw new Error(`Failed to fetch next: ${response.statusText}`);
+        }
+
+        const jsonnext = await response.json();
+
+        if (jsonnext.departure_time != null)
+          setNextNext(jsonnext);
+        else
+          console.error("データの取得に失敗")
+      } catch (error) {
+        console.error(error);
+        console.error("fetchできません")
+        return null;
+      }
+    };
+
     // 2. 1分（60000ミリ秒）ごとにfetchDataを実行するタイマーを設定
-    getData();
+    getData_next();
     setCount(count + 1);
     const intervalId = setInterval(() => {
-      getData();
+      getData_next();
+      getData_next_next();
       setCount(count + 1);
       console.error(count);
     }, 60 * 1000); // 60秒 * 1000ミリ秒 = 1分
@@ -79,7 +103,7 @@ function App() {
       <div className="next">
         <span className="orange">次発</span>
         {/* 5個前より手前なら点滅させる */}
-        {visible || Number(next.previous) > 5 ? <span className="keitou">{next?.bus_number}</span> : <span className="toumei"></span>}
+        {visible || Number(next?.previous) > 5 ? <span className="keitou">{next?.bus_number}</span> : <span className="toumei"></span>}
         <span className="time">{next?.departure_time}</span>
       </div>
       <div className="delay">{Number(next.delay) != 0 && `遅れ約 ${next?.delay} 分`}</div>
@@ -92,7 +116,8 @@ function App() {
     <div className="bus_item">
       <div className="next">
         <span className="orange">次次発</span>
-        {visible ? <span className="keitou">{nextnext?.bus_number}</span> : <span className="toumei"></span>}
+        {/* 5個前より手前なら点滅させる */}
+        {visible || Number(nextnext?.previous) > 5 ? <span className="keitou">{nextnext?.bus_number}</span> : <span className="toumei"></span>}
         <span className="time">{nextnext?.departure_time}</span>
       </div>
       <div className="delay">{Number(nextnext?.delay) != 0 && `遅れ約 ${nextnext?.delay} 分`}</div>
